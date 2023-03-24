@@ -96,7 +96,94 @@ public class Editor {
         imageColorInvertOpt.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
+                editorArea.colorInvert();
+            }
+        });
 
+        MenuItem imageColorChannelTab = new MenuItem (imageColorMenu, SWT.CASCADE);
+        imageColorChannelTab.setText (Translator.translate("editor.menu.image.color.channel"));
+        Menu imageColorChannelMenu = new Menu(shell, SWT.DROP_DOWN);
+        imageColorChannelTab.setMenu(imageColorChannelMenu);
+
+        MenuItem imageColorChannelRemoveTab = new MenuItem (imageColorChannelMenu, SWT.CASCADE);
+        imageColorChannelRemoveTab.setText (Translator.translate("editor.menu.image.color.channel.remove"));
+        Menu imageColorChannelRemoveMenu = new Menu(shell, SWT.DROP_DOWN);
+        imageColorChannelRemoveTab.setMenu(imageColorChannelRemoveMenu);
+
+        MenuItem imageColorChannelRemoveROpt = new MenuItem(imageColorChannelRemoveMenu, SWT.PUSH);
+        imageColorChannelRemoveROpt.setText(Translator.translate("editor.menu.image.color.channel.remove.R"));
+        imageColorChannelRemoveROpt.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                editorArea.channelRemoveR();
+            }
+        });
+
+        MenuItem imageColorBrightnessOpt = new MenuItem(imageColorMenu, SWT.PUSH);
+        imageColorBrightnessOpt.setText(Translator.translate("editor.menu.image.color.brightness"));
+        imageColorBrightnessOpt.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                Shell w = new Shell(display);
+                w.setSize(shell.getSize().x / 3, shell.getSize().y / 3);
+                w.setText(Translator.translate("editor.window.image.color.brightness"));
+                w.setLayout(new BorderLayout());
+
+                w.addFocusListener(new FocusListener() {
+                    public void focusLost(FocusEvent e) {}
+                    public void focusGained(FocusEvent e) {}
+                });
+
+                final int[] m = {1};
+
+                Composite bottomButtons = new Composite(w, SWT.NONE);
+                bottomButtons.setLayoutData(new BorderData(SWT.BOTTOM, SWT.DEFAULT, SWT.DEFAULT));
+                bottomButtons.setLayout(new BorderLayout());
+
+                final Button okButton = new Button(bottomButtons, SWT.NONE);
+                okButton.setLayoutData(new BorderData(SWT.LEFT, SWT.CENTER, SWT.DEFAULT));
+                okButton.setText(Translator.translate("window.ok"));
+                okButton.addSelectionListener(new SelectionListener() {
+                    public void widgetSelected(SelectionEvent event) {
+                        editorArea.colorBrightness((double) m[0] / 100);
+                        w.close();
+                    }
+
+                    @Override
+                    public void widgetDefaultSelected(SelectionEvent e) {}
+                });
+
+                final Button cancelButton = new Button(bottomButtons, SWT.NONE);
+                cancelButton.setLayoutData(new BorderData(SWT.RIGHT, SWT.CENTER, SWT.DEFAULT));
+                cancelButton.setText(Translator.translate("window.cancel"));
+                cancelButton.addSelectionListener(new SelectionListener() {
+                    public void widgetSelected(SelectionEvent event) {
+                        w.close();
+                    }
+
+                    @Override
+                    public void widgetDefaultSelected(SelectionEvent e) {}
+                });
+
+                Composite settings = new Composite(w, SWT.NONE);
+                settings.setLayoutData(new BorderData(SWT.CENTER, SWT.DEFAULT, SWT.CENTER));
+                settings.setLayout(new BorderLayout());
+
+                final Label t = new Label(settings, SWT.BORDER);
+                t.setText(Translator.translate("tolerance"));
+
+                final Slider toleranceSlide = new Slider(settings, SWT.HORIZONTAL);
+                toleranceSlide.setMinimum(20);
+                toleranceSlide.setMaximum(200);
+                toleranceSlide.setIncrement(1);
+
+                toleranceSlide.addSelectionListener(new SelectionAdapter() {
+                    public void widgetSelected(SelectionEvent e) {
+                        m[0] = toleranceSlide.getSelection();
+                    }
+                });
+
+                w.open();
             }
         });
 
@@ -129,7 +216,8 @@ public class Editor {
                 okButton.setText(Translator.translate("window.ok"));
                 okButton.addSelectionListener(new SelectionListener() {
                     public void widgetSelected(SelectionEvent event) {
-                        editorArea.replace(c1[0], c2[0], tolerance[0], smartReplace[0]);
+                        editorArea.colorReplace(c1[0], c2[0], tolerance[0], smartReplace[0]);
+                        w.close();
                     }
 
                     @Override

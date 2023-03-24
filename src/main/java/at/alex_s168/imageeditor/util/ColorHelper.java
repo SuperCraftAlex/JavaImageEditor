@@ -44,8 +44,36 @@ public class ColorHelper {
         );
     }
 
+    public static Color div(Color c1, double v) {
+        return new Color(
+                (int) (c1.getRed() / v),
+                (int) (c1.getGreen() / v),
+                (int) (c1.getBlue() / v)
+        );
+    }
+
     public static int sum(Color c) {
         return c.getRed() + c.getGreen() + c.getBlue();
+    }
+
+    public static double max(Color c) {
+        return Math.max(Math.max(c.getRed(),c.getBlue()),c.getGreen());
+    }
+
+    public static double min(Color c) {
+        return Math.min(Math.min(c.getRed(),c.getBlue()),c.getGreen());
+    }
+
+    public static double max1(Color c) {
+        return Math.max(Math.max((double) c.getRed()/255, (double) c.getBlue()/255), (double) c.getGreen()/255);
+    }
+
+    public static double min1(Color c) {
+        return Math.min(Math.min((double) c.getRed()/255, (double) c.getBlue()/255), (double) c.getGreen()/255);
+    }
+
+    public static double luminosity(Color c) {
+        return 0.5 * (max1(c) + min1(c));
     }
 
 }

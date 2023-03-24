@@ -7,7 +7,6 @@ import at.alex_s168.imageeditor.util.ImagePixelHelper;
 import static at.alex_s168.imageeditor.util.ColorHelper.colorConvert;
 import de.m_marvin.logicsim.ui.TextRenderer;
 import de.m_marvin.univec.impl.Vec2d;
-import de.m_marvin.univec.impl.Vec2i;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Color;
@@ -130,10 +129,10 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 		}
 
 		if (resized) {
-			GL33.glViewport(0, 0, this.getSize().x, this.getSize().y);
-	        GL33.glLoadIdentity();
-		    GL33.glOrtho(0.0, this.getSize().x, this.getSize().y, 0.0, 0.0, 1.0);
-			GL33.glClearColor(0, 0, 0, 1);
+			GL11.glViewport(0, 0, this.getSize().x, this.getSize().y);
+	        GL11.glLoadIdentity();
+		    GL11.glOrtho(0.0, this.getSize().x, this.getSize().y, 0.0, 0.0, 1.0);
+			GL11.glClearColor(0, 0, 0, 1);
 		}
 
 		// Vor jedem Rendering ausführen
@@ -209,7 +208,7 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 		}
 	}
 
-	public void replace(Color what, Color to, int tolerance, boolean smart) {
+	public void colorReplace(Color what, Color to, int tolerance, boolean smart) {
 
 		int it = 0;
 		for (int pixel : rOut.pix) {
@@ -233,4 +232,89 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 		}
 
 	}
+
+	public void colorInvert() {
+
+		int it = 0;
+		for (int pixel : rOut.pix) {
+			Color c = new Color(
+					255-(pixel>>16)&0xFF,
+					255-(pixel>>8)&0xFF,
+					255-(pixel)&0xFF
+			);
+
+			rOut.pix[it] = ColorHelper.colorConvert(c);
+
+			it++;
+		}
+
+	}
+
+	public void colorBrightness(double m) {
+
+		int it = 0;
+		for (int pixel : rOut.pix) {
+			Color c = new Color(
+					Math.min((int) (((pixel>>16)&0xFF) * m),255),
+					Math.min((int) (((pixel>>8)&0xFF) * m),255),
+					Math.min((int) (((pixel)&0xFF) * m),255)
+			);
+
+			rOut.pix[it] = ColorHelper.colorConvert(c);
+
+			it++;
+		}
+
+	}
+
+	public void channelRemoveR() {
+
+		int it = 0;
+		for (int pixel : rOut.pix) {
+			Color c = new Color(
+					0,
+					(pixel>>8)&0xFF,
+					(pixel)&0xFF
+			);
+
+			rOut.pix[it] = ColorHelper.colorConvert(c);
+
+			it++;
+		}
+
+	}
+
+	public void channelRemoveG() {
+
+		int it = 0;
+		for (int pixel : rOut.pix) {
+			Color c = new Color(
+					(pixel>>16)&0xFF,
+					0,
+					(pixel)&0xFF
+			);
+
+			rOut.pix[it] = ColorHelper.colorConvert(c);
+
+			it++;
+		}
+	}
+
+	public void channelRemoveB() {
+
+		int it = 0;
+		for (int pixel : rOut.pix) {
+			Color c = new Color(
+					(pixel>>16)&0xFF,
+					(pixel>>8)&0xFF,
+					0
+			);
+
+			rOut.pix[it] = ColorHelper.colorConvert(c);
+
+			it++;
+		}
+
+	}
+
 }
