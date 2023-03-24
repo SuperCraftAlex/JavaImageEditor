@@ -14,6 +14,22 @@
   "editor.menu.color.secondary": "Secondary Color",
 
   "window.ok": "Ok",
-  "window.cancel": "Cancel"
+  "window.cancel": "Cancel",
+  "brightness": "Brightness",
+  "tolerance": "Tolerance",
 
+  "editor.menu.image": "Image",
+  "editor.menu.image.color": "Color",
+  "editor.menu.image.color.invert": "Invert",
+  "editor.menu.image.color.brightness": "Brightness",
+  "editor.menu.image.color.replace": "Replace",
+  "editor.menu.image.color.channel": "Channel",
+  "editor.menu.image.color.channel.remove": "Remove Channel",
+  "editor.menu.image.color.channel.remove.R": "Red",
+  "editor.menu.image.color.channel.remove.G": "Green",
+  "editor.menu.image.color.channel.remove.B": "Blue",
+
+  "editor.window.image.color.brightness": "Change Brightness",
+  "editor.window.image.color.replace": "Replace Color",
+  "editor.window.image.color.replace.smartreplace": "Smart replace"
 }

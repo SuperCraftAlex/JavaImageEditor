@@ -105,6 +105,20 @@ public class Editor {
         Menu imageColorChannelMenu = new Menu(shell, SWT.DROP_DOWN);
         imageColorChannelTab.setMenu(imageColorChannelMenu);
 
+        MenuItem imageColorChannelRotateTab = new MenuItem (imageColorChannelMenu, SWT.CASCADE);
+        imageColorChannelRotateTab.setText (Translator.translate("editor.menu.image.color.channel.rotate"));
+        Menu imageColorChannelRotateMenu = new Menu(shell, SWT.DROP_DOWN);
+        imageColorChannelRotateTab.setMenu(imageColorChannelRotateMenu);
+
+        MenuItem imageColorChannelRotateCWOpt = new MenuItem(imageColorChannelRotateMenu, SWT.PUSH);
+        imageColorChannelRotateCWOpt.setText(Translator.translate("editor.menu.image.color.channel.rotate.CW"));
+        imageColorChannelRotateCWOpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {editorArea.channelRotateCW();}});
+
+        MenuItem imageColorChannelRotateCCWOpt = new MenuItem(imageColorChannelRotateMenu, SWT.PUSH);
+        imageColorChannelRotateCCWOpt.setText(Translator.translate("editor.menu.image.color.channel.rotate.CCW"));
+        imageColorChannelRotateCCWOpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {editorArea.channelRotateCCW();}});
+
+
         MenuItem imageColorChannelRemoveTab = new MenuItem (imageColorChannelMenu, SWT.CASCADE);
         imageColorChannelRemoveTab.setText (Translator.translate("editor.menu.image.color.channel.remove"));
         Menu imageColorChannelRemoveMenu = new Menu(shell, SWT.DROP_DOWN);
@@ -112,12 +126,15 @@ public class Editor {
 
         MenuItem imageColorChannelRemoveROpt = new MenuItem(imageColorChannelRemoveMenu, SWT.PUSH);
         imageColorChannelRemoveROpt.setText(Translator.translate("editor.menu.image.color.channel.remove.R"));
-        imageColorChannelRemoveROpt.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                editorArea.channelRemoveR();
-            }
-        });
+        imageColorChannelRemoveROpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {editorArea.channelRemoveR();}});
+
+        MenuItem imageColorChannelRemoveGOpt = new MenuItem(imageColorChannelRemoveMenu, SWT.PUSH);
+        imageColorChannelRemoveGOpt.setText(Translator.translate("editor.menu.image.color.channel.remove.G"));
+        imageColorChannelRemoveGOpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {editorArea.channelRemoveG();}});
+
+        MenuItem imageColorChannelRemoveBOpt = new MenuItem(imageColorChannelRemoveMenu, SWT.PUSH);
+        imageColorChannelRemoveBOpt.setText(Translator.translate("editor.menu.image.color.channel.remove.B"));
+        imageColorChannelRemoveBOpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {editorArea.channelRemoveB();}});
 
         MenuItem imageColorBrightnessOpt = new MenuItem(imageColorMenu, SWT.PUSH);
         imageColorBrightnessOpt.setText(Translator.translate("editor.menu.image.color.brightness"));
@@ -170,7 +187,7 @@ public class Editor {
                 settings.setLayout(new BorderLayout());
 
                 final Label t = new Label(settings, SWT.BORDER);
-                t.setText(Translator.translate("tolerance"));
+                t.setText(Translator.translate("brightness"));
 
                 final Slider toleranceSlide = new Slider(settings, SWT.HORIZONTAL);
                 toleranceSlide.setMinimum(20);

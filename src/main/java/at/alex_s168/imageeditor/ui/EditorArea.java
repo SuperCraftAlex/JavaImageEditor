@@ -317,4 +317,34 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 
 	}
 
+	public void channelRotateCCW() {
+		int it = 0;
+		for (int pixel : rOut.pix) {
+			Color c = new Color(
+					(pixel)&0xFF,
+					(pixel>>16)&0xFF,
+					(pixel>>8)&0xFF
+			);
+
+			rOut.pix[it] = ColorHelper.colorConvert(c);
+
+			it++;
+		}
+	}
+
+	public void channelRotateCW() {
+		int it = 0;
+		for (int pixel : rOut.pix) {
+			Color c = new Color(
+					(pixel>>8)&0xFF,
+					(pixel)&0xFF,
+					(pixel>>16)&0xFF
+			);
+
+			rOut.pix[it] = ColorHelper.colorConvert(c);
+
+			it++;
+		}
+	}
+
 }
