@@ -1,0 +1,19 @@
+{
+
+  "editor.menu.file": "File",
+  "editor.menu.file.save": "Save",
+  "editor.menu.file.save_as": "Save as ...",
+  "editor.menu.file.load": "Load ...",
+
+  "editor.window.info.override_request": "This File already exists. \nDo you want to override it?",
+  "editor.window.info": "Info",
+
+  "editor.window.color.select": "Choose a Color",
+  "editor.menu.color.change": "Change",
+  "editor.menu.color.primary": "Primary Color",
+  "editor.menu.color.secondary": "Secondary Color",
+
+  "window.ok": "Ok",
+  "window.cancel": "Cancel"
+
+}
