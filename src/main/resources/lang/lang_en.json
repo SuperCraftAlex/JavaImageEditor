@@ -29,6 +29,10 @@
   "editor.menu.image.color.channel.remove.G": "Green",
   "editor.menu.image.color.channel.remove.B": "Blue",
 
+  "editor.menu.image.color.channel.rotate": "Rotate Channel",
+  "editor.menu.image.color.channel.rotate.CW": "Clockwise",
+  "editor.menu.image.color.channel.rotate.CCW": "Counterclockwise",
+
   "editor.window.image.color.brightness": "Change Brightness",
   "editor.window.image.color.replace": "Replace Color",
   "editor.window.image.color.replace.smartreplace": "Smart replace"

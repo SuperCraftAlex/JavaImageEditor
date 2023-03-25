@@ -32,8 +32,8 @@ public class Editor {
     public int scrollX = 0;
     public int scrollY = 0;
 
-    public int sliderXMax = 0;
-    public int sliderYMax = 0;
+    public final Slider sliderX;
+    public final Slider sliderY;
 
     public static Image decodeImage(String imageString) {
         return new Image(ImageEditor.getInstance().getDisplay(), new ImageData(new ByteArrayInputStream(Base64.getDecoder().decode(imageString))));
@@ -153,33 +153,9 @@ public class Editor {
 
                 final int[] m = {1};
 
-                Composite bottomButtons = new Composite(w, SWT.NONE);
-                bottomButtons.setLayoutData(new BorderData(SWT.BOTTOM, SWT.DEFAULT, SWT.DEFAULT));
-                bottomButtons.setLayout(new BorderLayout());
-
-                final Button okButton = new Button(bottomButtons, SWT.NONE);
-                okButton.setLayoutData(new BorderData(SWT.LEFT, SWT.CENTER, SWT.DEFAULT));
-                okButton.setText(Translator.translate("window.ok"));
-                okButton.addSelectionListener(new SelectionListener() {
-                    public void widgetSelected(SelectionEvent event) {
-                        editorArea.colorBrightness((double) m[0] / 100);
-                        w.close();
-                    }
-
-                    @Override
-                    public void widgetDefaultSelected(SelectionEvent e) {}
-                });
-
-                final Button cancelButton = new Button(bottomButtons, SWT.NONE);
-                cancelButton.setLayoutData(new BorderData(SWT.RIGHT, SWT.CENTER, SWT.DEFAULT));
-                cancelButton.setText(Translator.translate("window.cancel"));
-                cancelButton.addSelectionListener(new SelectionListener() {
-                    public void widgetSelected(SelectionEvent event) {
-                        w.close();
-                    }
-
-                    @Override
-                    public void widgetDefaultSelected(SelectionEvent e) {}
+                generateBottomButtons(w, new SelectionListener() {
+                    @Override public void widgetSelected(SelectionEvent e) { editorArea.colorBrightness((double) m[0] / 100); }
+                    @Override public void widgetDefaultSelected(SelectionEvent e) {}
                 });
 
                 Composite settings = new Composite(w, SWT.NONE);
@@ -189,14 +165,15 @@ public class Editor {
                 final Label t = new Label(settings, SWT.BORDER);
                 t.setText(Translator.translate("brightness"));
 
-                final Slider toleranceSlide = new Slider(settings, SWT.HORIZONTAL);
-                toleranceSlide.setMinimum(20);
-                toleranceSlide.setMaximum(200);
-                toleranceSlide.setIncrement(1);
+                final Slider brightnessSlide = new Slider(settings, SWT.HORIZONTAL);
+                brightnessSlide.setMinimum(20);
+                brightnessSlide.setMaximum(200);
+                brightnessSlide.setIncrement(1);
+                brightnessSlide.setSelection(100);
 
-                toleranceSlide.addSelectionListener(new SelectionAdapter() {
+                brightnessSlide.addSelectionListener(new SelectionAdapter() {
                     public void widgetSelected(SelectionEvent e) {
-                        m[0] = toleranceSlide.getSelection();
+                        m[0] = brightnessSlide.getSelection();
                     }
                 });
 
@@ -224,36 +201,10 @@ public class Editor {
                 final int[] tolerance = {0};
                 final boolean[] smartReplace = {false};
 
-                Composite bottomButtons = new Composite(w, SWT.NONE);
-                bottomButtons.setLayoutData(new BorderData(SWT.BOTTOM, SWT.DEFAULT, SWT.DEFAULT));
-                bottomButtons.setLayout(new BorderLayout());
-
-                final Button okButton = new Button(bottomButtons, SWT.NONE);
-                okButton.setLayoutData(new BorderData(SWT.LEFT, SWT.CENTER, SWT.DEFAULT));
-                okButton.setText(Translator.translate("window.ok"));
-                okButton.addSelectionListener(new SelectionListener() {
-                    public void widgetSelected(SelectionEvent event) {
-                        editorArea.colorReplace(c1[0], c2[0], tolerance[0], smartReplace[0]);
-                        w.close();
-                    }
-
-                    @Override
-                    public void widgetDefaultSelected(SelectionEvent e) {}
+                generateBottomButtons(w, new SelectionListener() {
+                    @Override public void widgetSelected(SelectionEvent e) { editorArea.colorReplace(c1[0], c2[0], tolerance[0], smartReplace[0]); }
+                    @Override public void widgetDefaultSelected(SelectionEvent e) {}
                 });
-
-                final Button cancelButton = new Button(bottomButtons, SWT.NONE);
-                cancelButton.setLayoutData(new BorderData(SWT.RIGHT, SWT.CENTER, SWT.DEFAULT));
-                cancelButton.setText(Translator.translate("window.cancel"));
-                cancelButton.addSelectionListener(new SelectionListener() {
-                    public void widgetSelected(SelectionEvent event) {
-                        w.close();
-                    }
-
-                    @Override
-                    public void widgetDefaultSelected(SelectionEvent e) {}
-                });
-
-                //
 
                 Composite colors = new Composite(w, SWT.NONE);
                 colors.setLayoutData(new BorderData(SWT.UP, SWT.DEFAULT, SWT.DEFAULT));
@@ -402,32 +353,67 @@ public class Editor {
         groupRight.setLayout(new BorderLayout());
 
         //todo: sliders weird
-        final Slider sliderX = new Slider(groupBottom, SWT.BOTTOM);
+        sliderX = new Slider(groupBottom, SWT.BOTTOM);
         groupColorSecondary.setLayoutData(new BorderData(SWT.BOTTOM));
         groupColorSecondary.setLayout(new BorderLayout());
         sliderX.setMinimum(0);
-        sliderX.setMaximum(sliderXMax);
+        sliderX.setMaximum(1);
         sliderX.setIncrement(1);
         sliderX.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 scrollX = sliderX.getSelection();
+                editorArea.update();
             }
         });
 
-        final Slider sliderY = new Slider(groupRight, SWT.VERTICAL);
+        sliderY = new Slider(groupRight, SWT.VERTICAL);
         groupColorSecondary.setLayoutData(new BorderData(SWT.VERTICAL));
         groupColorSecondary.setLayout(new BorderLayout());
         sliderY.setMinimum(0);
-        sliderY.setMaximum(sliderYMax);
+        sliderY.setMaximum(1);
         sliderY.setIncrement(1);
         sliderY.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 scrollY = sliderY.getSelection();
+                editorArea.update();
             }
         });
 
         this.shell.open();
         updateTitle();
+    }
+
+    private void generateBottomButtons(Shell w, SelectionListener ok) {
+
+        Composite bottomButtons = new Composite(w, SWT.NONE);
+        bottomButtons.setLayoutData(new BorderData(SWT.BOTTOM, SWT.DEFAULT, SWT.DEFAULT));
+        bottomButtons.setLayout(new BorderLayout());
+
+        final Button okButton = new Button(bottomButtons, SWT.NONE);
+        okButton.setLayoutData(new BorderData(SWT.LEFT, SWT.CENTER, SWT.DEFAULT));
+        okButton.setText(Translator.translate("window.ok"));
+        okButton.addSelectionListener(new SelectionListener() {
+            public void widgetSelected(SelectionEvent event) {
+                w.close();
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {}
+        });
+        okButton.addSelectionListener(ok);
+
+        final Button cancelButton = new Button(bottomButtons, SWT.NONE);
+        cancelButton.setLayoutData(new BorderData(SWT.RIGHT, SWT.CENTER, SWT.DEFAULT));
+        cancelButton.setText(Translator.translate("window.cancel"));
+        cancelButton.addSelectionListener(new SelectionListener() {
+            public void widgetSelected(SelectionEvent event) {
+                w.close();
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {}
+        });
+
     }
 
     public void updateTitle() {

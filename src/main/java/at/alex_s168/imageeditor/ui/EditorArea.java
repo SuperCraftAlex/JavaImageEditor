@@ -24,6 +24,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EditorArea extends Canvas implements MouseListener, MouseMoveListener, KeyListener {
 	
@@ -41,6 +43,10 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 	protected double scale = 1;
 
 	public PixelMap rOut = new PixelMap();
+
+	protected boolean toUpdate = false;
+
+	public List<Vec2d> mouseDragPosCache = new ArrayList<>();
 	
 	public EditorArea(Composite parent) {
 		super(parent, SWT.NONE);
@@ -74,14 +80,20 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 		String key = Character.toString(e.character);
 		if(key.equals("+")) {
 			scale += 0.1;
+			update();
 		}
 		if(key.equals("-")) {
 			scale -= 0.1;
+			update();
 		}
 
 		if(((e.stateMask & SWT.CTRL) == SWT.CTRL) && (e.keyCode == 's')) {
 			saveFile(ImageEditor.getInstance().getEditor().openFile);
 		}
+	}
+
+	public void update() {
+		this.toUpdate = true;
 	}
 	
 	protected void initOpenGL() {
@@ -97,15 +109,17 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 
 		GL33.glMatrixMode(GL33.GL_PROJECTION);
 		GL33.glLoadIdentity();
-		GL33.glOrtho(0,1000,1000,0, 0, 1); // Hier einstellen was Links/Rechts/Oben/Unten ist (in deinen Bildschirmkoordinaten=
+		GL33.glOrtho(0,1000,1000,0, 0, 1);
 		GL33.glEnable(GL33.GL_BLEND);
 		GL33.glBlendFunc(GL33.GL_SRC_ALPHA, GL33.GL_ONE_MINUS_SRC_ALPHA);
 		GL33.glDisable(GL33.GL_DEPTH_TEST);
 		GL33.glDisable(GL33.GL_CULL_FACE);
 
+		update();
+
         this.glCanvas.addDisposeListener((e) -> TextRenderer.cleanUpOpenGL());
 	    this.resized = true;
-	    this.initialized = false;
+	    this.initialized = true;
 	}
 
 	public void updateImage(int[] pixels, int width, int height) {
@@ -135,59 +149,67 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 			GL11.glClearColor(0, 0, 0, 1);
 		}
 
-		// Vor jedem Rendering ausführen
-		GL33.glClear(GL33.GL_COLOR_BUFFER_BIT);
-
-
-
 		if(mouseDown) {
-			int c = colorConvert(ImageEditor.getInstance().getEditor().colorPrimary);
-			rOut.set(realMousePosition.add(1d,0d), c);
-			rOut.set(realMousePosition.add(0d,1d), c);
-			rOut.set(realMousePosition.add(-1d,0d), c);
-			rOut.set(realMousePosition.add(0d,-1d), c);
-			rOut.set(realMousePosition, c);
+			mouseDragPosCache.add(realMousePosition);
+
+			if(mouseDragPosCache.size() > 5) {
+				int c = colorConvert(ImageEditor.getInstance().getEditor().colorPrimary);
+				for(Vec2d p : mouseDragPosCache) {
+					rOut.set(p.add(1d,0d), c);
+					rOut.set(p.add(0d,1d), c);
+					rOut.set(p.add(-1d,0d), c);
+					rOut.set(p.add(0d,-1d), c);
+					rOut.set(p, c);
+				}
+				mouseDragPosCache.clear();
+			}
+
+			update();
 		}
-		updateImage(rOut);
 
+		Editor editor = ImageEditor.getInstance().getEditor();
 
+		int x = editor.scrollX;
+		int y = editor.scrollY;
 
+		int w = (int) (rOut.getWidth() * scale);
+		int h = (int) (rOut.getHeight() * scale);
 
-		// Ausführen um die Textur zu rendern
-		int x = ImageEditor.getInstance().getEditor().scrollX;
-		int y = ImageEditor.getInstance().getEditor().scrollY;
+		if (toUpdate) {
+			updateImage(rOut);
 
-		int w = (int) (rOut.getWidth()*scale);
-		int h = (int) (rOut.getHeight()*scale);
-		GL33.glBindTexture(GL33.GL_TEXTURE_2D, textureId);
-		GL33.glBegin(GL33.GL_QUADS);
-		GL33.glTexCoord2f(0, 0);
-		GL33.glVertex2f(x, y);
-		GL33.glTexCoord2f(1, 0);
-		GL33.glVertex2f(x + w, y);
-		GL33.glTexCoord2f(1, 1);
-		GL33.glVertex2f(x + w, y + h);
-		GL33.glTexCoord2f(0, 1);
-		GL33.glVertex2f(x, y + h);
-		GL33.glEnd();
+			GL33.glClear(GL33.GL_COLOR_BUFFER_BIT);
 
-		glCanvas.swapBuffers();
+			GL33.glBindTexture(GL33.GL_TEXTURE_2D, textureId);
+			GL33.glBegin(GL33.GL_QUADS);
+			GL33.glTexCoord2f(0, 0);
+			GL33.glVertex2f(x, y);
+			GL33.glTexCoord2f(1, 0);
+			GL33.glVertex2f(x + w, y);
+			GL33.glTexCoord2f(1, 1);
+			GL33.glVertex2f(x + w, y + h);
+			GL33.glTexCoord2f(0, 1);
+			GL33.glVertex2f(x, y + h);
+			GL33.glEnd();
+
+			glCanvas.swapBuffers();
+
+			toUpdate = false;
+		}
 
 		if(mousePosition != null) {
 			realMousePosition = mousePosition.sub((double) x, (double) y).div(scale);
 		}
 
-		ImageEditor.getInstance().getEditor().sliderYMax = rOut.getHeight();
-		ImageEditor.getInstance().getEditor().sliderXMax = rOut.getWidth();
+		editor.sliderY.setMaximum(Math.max(0, h - getSize().y)+1);
+		editor.sliderX.setMaximum(Math.max(0, w - getSize().x)+1);
 
-	}
-
-	public GLCanvas getGlCanvas() {
-		return glCanvas;
 	}
 
 	public void openFile(File filePath) {
 		this.rOut = ImagePixelHelper.getPixFromImage(filePath);
+
+		update();
 	}
 
 	public void saveFile(File filePath) {
@@ -231,6 +253,8 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 			it++;
 		}
 
+		update();
+
 	}
 
 	public void colorInvert() {
@@ -247,6 +271,8 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 
 			it++;
 		}
+
+		update();
 
 	}
 
@@ -265,6 +291,8 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 			it++;
 		}
 
+		update();
+
 	}
 
 	public void channelRemoveR() {
@@ -282,6 +310,8 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 			it++;
 		}
 
+		update();
+
 	}
 
 	public void channelRemoveG() {
@@ -298,6 +328,9 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 
 			it++;
 		}
+
+		update();
+
 	}
 
 	public void channelRemoveB() {
@@ -315,6 +348,8 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 			it++;
 		}
 
+		update();
+
 	}
 
 	public void channelRotateCCW() {
@@ -330,6 +365,9 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 
 			it++;
 		}
+
+		update();
+
 	}
 
 	public void channelRotateCW() {
@@ -345,6 +383,9 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 
 			it++;
 		}
+
+		update();
+
 	}
 
 }
