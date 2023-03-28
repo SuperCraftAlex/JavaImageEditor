@@ -1,6 +1,7 @@
 package at.alex_s168.imageeditor.ui;
 
 import at.alex_s168.imageeditor.ImageEditor;
+import at.alex_s168.imageeditor.features.image.FeatureImageColor;
 import at.alex_s168.imageeditor.util.Translator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -23,7 +24,7 @@ public class Editor {
     protected Menu titleBar;
     protected ToolBar toolBar;
     protected Tree partSelector;
-    protected EditorArea editorArea;
+    public EditorArea editorArea;
 
     public Color colorPrimary = new Color(0, 0, 0, 255);
 
@@ -96,7 +97,7 @@ public class Editor {
         imageColorInvertOpt.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                editorArea.colorInvert();
+                FeatureImageColor.colorInvert();
             }
         });
 
@@ -112,11 +113,12 @@ public class Editor {
 
         MenuItem imageColorChannelRotateCWOpt = new MenuItem(imageColorChannelRotateMenu, SWT.PUSH);
         imageColorChannelRotateCWOpt.setText(Translator.translate("editor.menu.image.color.channel.rotate.CW"));
-        imageColorChannelRotateCWOpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {editorArea.channelRotateCW();}});
+        imageColorChannelRotateCWOpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {
+            FeatureImageColor.channelRotateCW();}});
 
         MenuItem imageColorChannelRotateCCWOpt = new MenuItem(imageColorChannelRotateMenu, SWT.PUSH);
         imageColorChannelRotateCCWOpt.setText(Translator.translate("editor.menu.image.color.channel.rotate.CCW"));
-        imageColorChannelRotateCCWOpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {editorArea.channelRotateCCW();}});
+        imageColorChannelRotateCCWOpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {FeatureImageColor.channelRotateCCW();}});
 
 
         MenuItem imageColorChannelRemoveTab = new MenuItem (imageColorChannelMenu, SWT.CASCADE);
@@ -126,15 +128,15 @@ public class Editor {
 
         MenuItem imageColorChannelRemoveROpt = new MenuItem(imageColorChannelRemoveMenu, SWT.PUSH);
         imageColorChannelRemoveROpt.setText(Translator.translate("editor.menu.image.color.channel.remove.R"));
-        imageColorChannelRemoveROpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {editorArea.channelRemoveR();}});
+        imageColorChannelRemoveROpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {FeatureImageColor.channelRemoveR();}});
 
         MenuItem imageColorChannelRemoveGOpt = new MenuItem(imageColorChannelRemoveMenu, SWT.PUSH);
         imageColorChannelRemoveGOpt.setText(Translator.translate("editor.menu.image.color.channel.remove.G"));
-        imageColorChannelRemoveGOpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {editorArea.channelRemoveG();}});
+        imageColorChannelRemoveGOpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {FeatureImageColor.channelRemoveG();}});
 
         MenuItem imageColorChannelRemoveBOpt = new MenuItem(imageColorChannelRemoveMenu, SWT.PUSH);
         imageColorChannelRemoveBOpt.setText(Translator.translate("editor.menu.image.color.channel.remove.B"));
-        imageColorChannelRemoveBOpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {editorArea.channelRemoveB();}});
+        imageColorChannelRemoveBOpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {FeatureImageColor.channelRemoveB();}});
 
         MenuItem imageColorBrightnessOpt = new MenuItem(imageColorMenu, SWT.PUSH);
         imageColorBrightnessOpt.setText(Translator.translate("editor.menu.image.color.brightness"));
@@ -154,7 +156,7 @@ public class Editor {
                 final int[] m = {1};
 
                 generateBottomButtons(w, new SelectionListener() {
-                    @Override public void widgetSelected(SelectionEvent e) { editorArea.colorBrightness((double) m[0] / 100); }
+                    @Override public void widgetSelected(SelectionEvent e) { FeatureImageColor.colorBrightness((double) m[0] / 100); }
                     @Override public void widgetDefaultSelected(SelectionEvent e) {}
                 });
 
@@ -202,7 +204,7 @@ public class Editor {
                 final boolean[] smartReplace = {false};
 
                 generateBottomButtons(w, new SelectionListener() {
-                    @Override public void widgetSelected(SelectionEvent e) { editorArea.colorReplace(c1[0], c2[0], tolerance[0], smartReplace[0]); }
+                    @Override public void widgetSelected(SelectionEvent e) { FeatureImageColor.colorReplace(c1[0], c2[0], tolerance[0], smartReplace[0]); }
                     @Override public void widgetDefaultSelected(SelectionEvent e) {}
                 });
 

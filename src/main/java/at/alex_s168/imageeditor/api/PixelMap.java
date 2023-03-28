@@ -53,6 +53,15 @@ public class PixelMap {
             pix[p.x+p.y*width] = val;
     }
 
+    // + AABB
+    public int get(int x, int y, AABB aabb) {
+        return pix[((int)aabb.A.x+x)+((int)aabb.A.y+y)*width];
+    }
+
+    public AABB getBounds() {
+        return new AABB(new Vec2d(0,0), new Vec2d(width, height));
+    }
+
     public PixelMap() {
         this.width = 0;
         this.height = 0;
