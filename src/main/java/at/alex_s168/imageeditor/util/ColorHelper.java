@@ -76,4 +76,26 @@ public class ColorHelper {
         return 0.5 * (max1(c) + min1(c));
     }
 
+    public static Color truncate(Color c) {
+        return new Color(
+            range(c.getRed(), 0, 255),
+            range(c.getGreen(), 0, 255),
+            range(c.getBlue(), 0, 255)
+        );
+    }
+
+    public static int range(int i, int min, int max) {
+        if(i<min) {
+            return min;
+        }
+        if(i>max) {
+            return max;
+        }
+        return i;
+    }
+
+    public static int truncate(int i) {
+        return range(i, 0, 255);
+    }
+
 }
