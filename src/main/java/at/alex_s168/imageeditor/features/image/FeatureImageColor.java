@@ -11,11 +11,7 @@ public class FeatureImageColor {
 
         int it = 0;
         for (int pixel : EditorArea.getSelf().rOut.pix) {
-            Color c = new Color(
-                    (pixel>>16)&0xFF,
-                    (pixel>>8)&0xFF,
-                    (pixel)&0xFF
-            );
+            Color c = colorConvert(pixel, EditorArea.getSelf().rOut.mode);
 
             Color diff = ColorHelper.sub(c, what);
 
@@ -38,13 +34,13 @@ public class FeatureImageColor {
 
         int it = 0;
         for (int pixel : EditorArea.getSelf().rOut.pix) {
-            Color c = new Color(
-                    255-(pixel>>16)&0xFF,
-                    255-(pixel>>8)&0xFF,
-                    255-(pixel)&0xFF
-            );
+            Color c = colorConvert(pixel, EditorArea.getSelf().rOut.mode);
 
-            EditorArea.getSelf().rOut.pix[it] = ColorHelper.colorConvert(c);
+            EditorArea.getSelf().rOut.pix[it] = ColorHelper.colorConvert(new Color(
+                255 - c.getRed(),
+                255 - c.getGreen(),
+                255 - c.getBlue()
+            ));
 
             it++;
         }
@@ -57,13 +53,15 @@ public class FeatureImageColor {
 
         int it = 0;
         for (int pixel : EditorArea.getSelf().rOut.pix) {
-            Color c = new Color(
-                    Math.min((int) (((pixel>>16)&0xFF) * m),255),
-                    Math.min((int) (((pixel>>8)&0xFF) * m),255),
-                    Math.min((int) (((pixel)&0xFF) * m),255)
+            Color c = colorConvert(pixel, EditorArea.getSelf().rOut.mode);
+
+            Color cn = new Color(
+                    Math.min((int) (c.getRed() * m),255),
+                    Math.min((int) (c.getGreen() * m),255),
+                    Math.min((int) (c.getBlue() * m),255)
             );
 
-            EditorArea.getSelf().rOut.pix[it] = ColorHelper.colorConvert(c);
+            EditorArea.getSelf().rOut.pix[it] = ColorHelper.colorConvert(cn);
 
             it++;
         }
@@ -72,6 +70,7 @@ public class FeatureImageColor {
 
     }
 
+    //REMOVE START: REMOVE THESE FUNCTIONS COMPLETLY
     public static void channelRemoveR() {
 
         int it = 0;
@@ -164,5 +163,6 @@ public class FeatureImageColor {
         EditorArea.getSelf().update();
 
     }
+    //REMOVE END
 
 }

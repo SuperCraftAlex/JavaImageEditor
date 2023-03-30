@@ -16,11 +16,7 @@ public class FeatureImageAdjust {
 
         int it = 0;
         for (int pixel : EditorArea.getSelf().rOut.pix) {
-            Color c = new Color(
-                    (pixel>>16)&0xFF,
-                    (pixel>>8)&0xFF,
-                    (pixel)&0xFF
-            );
+            Color c = colorConvert(pixel, EditorArea.getSelf().rOut.mode);
 
             float factor = (259 * (val + 255)) / (255 * (259 - val));
 
@@ -48,11 +44,7 @@ public class FeatureImageAdjust {
 
         int it = 0;
         for (int pixel : EditorArea.getSelf().rOut.pix) {
-            Color c = new Color(
-                    (pixel>>16)&0xFF,
-                    (pixel>>8)&0xFF,
-                    (pixel)&0xFF
-            );
+            Color c = colorConvert(pixel, EditorArea.getSelf().rOut.mode);
 
             float gammaCorrection = 1 / val;
 

@@ -31,15 +31,13 @@ public class FeatureImageMode {
     public static void changeModeToGrayscale(bool real) {
         // if bugs check: https://www.dfstudios.co.uk/articles/programming/image-programming-algorithms/image-processing-algorithms-part-3-greyscale-conversion/
 
+        changeModeToRGB();
+
         if(EditorArea.getSelf().rOut.mode == ImageMode.RGB) {
 
             int it = 0;
             for (int pixel : EditorArea.getSelf().rOut.pix) {
-                Color c = new Color(
-                        (pixel>>16)&0xFF,
-                        (pixel>>8)&0xFF,
-                        (pixel)&0xFF
-                );
+                Color c = colorConvert(pixel, ImageMode.RGB);
 
                 int intensity;
 

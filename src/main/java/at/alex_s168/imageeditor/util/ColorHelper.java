@@ -27,6 +27,20 @@ public class ColorHelper {
         );
     }
 
+    public static Color colorConvert(int val, ImageMode mode) {
+        switch(mode) {
+            case mode == ImageMode.RGB || mode == ImageMode.GRAYSCALE:
+                return new Color(
+                    (val>>16)&0xFF,
+                    (val>>8)&0xFF,
+                    (val)&0xFF
+                );
+                
+            default:
+                return null;
+        }
+    }
+
     public static Color sub(Color c1, Color c2) {
         return new Color(
                 Math.min(Math.abs(c1.getRed() - c2.getRed()),255),
