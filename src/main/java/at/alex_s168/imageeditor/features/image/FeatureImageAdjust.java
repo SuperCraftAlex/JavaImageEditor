@@ -5,7 +5,7 @@ import at.alex_s168.imageeditor.ui.EditorArea;
 import static at.alex_s168.imageeditor.util.ColorHelper.*;
 import org.eclipse.swt.graphics.Color;
 
-public class FeatureImageColor {
+public class FeatureImageAdjust {
 
     /**
      * Changes the Contrast of the image
@@ -57,9 +57,9 @@ public class FeatureImageColor {
             float gammaCorrection = 1 / val;
 
             Color c2 = new Color(
-                255 * (c.getRed() / 255)   ^ gammaCorrection, 
-                255 * (c.getGreen() / 255) ^ gammaCorrection, 
-                255 * (c.getBlue() / 255)  ^ gammaCorrection
+                255 * (c.getRed()   / 255)  ^ gammaCorrection, 
+                255 * (c.getGreen() / 255)  ^ gammaCorrection, 
+                255 * (c.getBlue()  / 255)  ^ gammaCorrection
             );
 
             EditorArea.getSelf().rOut.pix[it] = colorConvert(c2);

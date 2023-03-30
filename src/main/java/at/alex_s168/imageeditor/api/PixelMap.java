@@ -16,17 +16,31 @@ public class PixelMap {
     protected int width;
     protected int height;
 
+    public ImageMode mode;
+
     public int[] pix;
 
     public PixelMap(int widthIn, int heightIn) {
         this.width = widthIn;
         this.height = heightIn;
+
+        this.mode  = ImageMode.RGB;
     }
 
     public PixelMap(int widthIn, int heightIn, int[] pixIn) {
         this.width = widthIn;
         this.height = heightIn;
         this.pix = pixIn;
+
+        this.mode  = ImageMode.RGB;
+    }
+
+    public PixelMap() {
+        this.width = 0;
+        this.height = 0;
+        this.pix = new int[]{0};
+
+        this.mode  = ImageMode.RGB;
     }
 
     public int get(int x, int y) {
@@ -60,12 +74,6 @@ public class PixelMap {
 
     public AABB getBounds() {
         return new AABB(new Vec2d(0,0), new Vec2d(width, height));
-    }
-
-    public PixelMap() {
-        this.width = 0;
-        this.height = 0;
-        this.pix = new int[]{0};
     }
 
 }
