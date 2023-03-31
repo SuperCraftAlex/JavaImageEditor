@@ -1,9 +1,10 @@
 package at.alex_s168.imageeditor.features.image;
 
-import at.alex_s168.imageeditor.ImageEditor;
 import at.alex_s168.imageeditor.ui.EditorArea;
 import at.alex_s168.imageeditor.util.ColorHelper;
 import org.eclipse.swt.graphics.Color;
+
+import static at.alex_s168.imageeditor.util.ColorHelper.*;
 
 public class FeatureImageColor {
 
@@ -17,10 +18,10 @@ public class FeatureImageColor {
 
             if (Math.abs(ColorHelper.sum(diff)) < tolerance) {
                 if(smart) {
-                    EditorArea.getSelf().rOut.pix[it] = ColorHelper.colorConvert( ColorHelper.add(to, diff) );
+                    EditorArea.getSelf().rOut.pix[it] = colorConvert( ColorHelper.add(to, diff) );
                 }
                 else {
-                    EditorArea.getSelf().rOut.pix[it] = ColorHelper.colorConvert(to);
+                    EditorArea.getSelf().rOut.pix[it] = colorConvert(to);
                 }
             }
             it++;
@@ -36,7 +37,7 @@ public class FeatureImageColor {
         for (int pixel : EditorArea.getSelf().rOut.pix) {
             Color c = colorConvert(pixel, EditorArea.getSelf().rOut.mode);
 
-            EditorArea.getSelf().rOut.pix[it] = ColorHelper.colorConvert(new Color(
+            EditorArea.getSelf().rOut.pix[it] = colorConvert(new Color(
                 255 - c.getRed(),
                 255 - c.getGreen(),
                 255 - c.getBlue()
@@ -61,7 +62,7 @@ public class FeatureImageColor {
                     Math.min((int) (c.getBlue() * m),255)
             );
 
-            EditorArea.getSelf().rOut.pix[it] = ColorHelper.colorConvert(cn);
+            EditorArea.getSelf().rOut.pix[it] = colorConvert(cn);
 
             it++;
         }
@@ -81,7 +82,7 @@ public class FeatureImageColor {
                     (pixel)&0xFF
             );
 
-            EditorArea.getSelf().rOut.pix[it] = ColorHelper.colorConvert(c);
+            EditorArea.getSelf().rOut.pix[it] = colorConvert(c);
 
             it++;
         }
@@ -100,7 +101,7 @@ public class FeatureImageColor {
                     (pixel)&0xFF
             );
 
-            EditorArea.getSelf().rOut.pix[it] = ColorHelper.colorConvert(c);
+            EditorArea.getSelf().rOut.pix[it] = colorConvert(c);
 
             it++;
         }
@@ -119,7 +120,7 @@ public class FeatureImageColor {
                     0
             );
 
-            EditorArea.getSelf().rOut.pix[it] = ColorHelper.colorConvert(c);
+            EditorArea.getSelf().rOut.pix[it] = colorConvert(c);
 
             it++;
         }
@@ -137,7 +138,7 @@ public class FeatureImageColor {
                     (pixel>>8)&0xFF
             );
 
-            EditorArea.getSelf().rOut.pix[it] = ColorHelper.colorConvert(c);
+            EditorArea.getSelf().rOut.pix[it] = colorConvert(c);
 
             it++;
         }
@@ -155,7 +156,7 @@ public class FeatureImageColor {
                     (pixel>>16)&0xFF
             );
 
-            EditorArea.getSelf().rOut.pix[it] = ColorHelper.colorConvert(c);
+            EditorArea.getSelf().rOut.pix[it] = colorConvert(c);
 
             it++;
         }

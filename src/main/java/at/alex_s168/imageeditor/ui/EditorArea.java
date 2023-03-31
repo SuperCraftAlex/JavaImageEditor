@@ -26,6 +26,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class EditorArea extends Canvas implements MouseListener, MouseMoveListener, KeyListener {
@@ -299,9 +300,7 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 	public void newFile(int sizeX, int sizeY) {
 		int[] pix = new int[sizeX * sizeY];
 
-		for (int i = 0; i < pix.length; i++) {
-			pix[i] = ColorHelper.colorConvert(255,0,0);
-		}
+		Arrays.fill(pix, ColorHelper.colorConvert(255, 0, 0));
 
 		this.rOut = new PixelMap(sizeX, sizeY, pix);
 

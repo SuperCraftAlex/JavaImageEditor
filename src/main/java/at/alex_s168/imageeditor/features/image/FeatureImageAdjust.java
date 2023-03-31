@@ -21,9 +21,9 @@ public class FeatureImageAdjust {
             float factor = (259 * (val + 255)) / (255 * (259 - val));
 
             Color c2 = new Color(
-                truncate(factor * (color.getRed() - 128) + 128),
-                truncate(factor * (color.getGreen() - 128) + 128),
-                truncate(factor * (color.getBlue() - 128) + 128)
+                truncate(factor * (c.getRed() - 128) + 128),
+                truncate(factor * (c.getGreen() - 128) + 128),
+                truncate(factor * (c.getBlue() - 128) + 128)
             );
 
             EditorArea.getSelf().rOut.pix[it] = colorConvert(c2);
@@ -46,7 +46,7 @@ public class FeatureImageAdjust {
         for (int pixel : EditorArea.getSelf().rOut.pix) {
             Color c = colorConvert(pixel, EditorArea.getSelf().rOut.mode);
 
-            float gammaCorrection = 1 / val;
+            int gammaCorrection = (int) (1 / (float)val);
 
             Color c2 = new Color(
                 255 * (c.getRed()   / 255)  ^ gammaCorrection, 

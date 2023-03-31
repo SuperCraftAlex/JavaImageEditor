@@ -1,6 +1,6 @@
 package at.alex_s168.imageeditor.features.image;
 
-enum ImageMode {
+public enum ImageMode {
     RGB,
     GRAYSCALE
 }

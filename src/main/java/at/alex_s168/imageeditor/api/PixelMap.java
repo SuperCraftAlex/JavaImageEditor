@@ -1,5 +1,6 @@
 package at.alex_s168.imageeditor.api;
 
+import at.alex_s168.imageeditor.features.image.ImageMode;
 import de.m_marvin.univec.impl.Vec2d;
 import de.m_marvin.univec.impl.Vec2i;
 

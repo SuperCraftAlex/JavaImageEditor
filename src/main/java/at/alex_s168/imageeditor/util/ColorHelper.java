@@ -1,5 +1,6 @@
 package at.alex_s168.imageeditor.util;
 
+import at.alex_s168.imageeditor.features.image.ImageMode;
 import org.eclipse.swt.graphics.Color;
 
 public class ColorHelper {
@@ -29,7 +30,7 @@ public class ColorHelper {
 
     public static Color colorConvert(int val, ImageMode mode) {
         switch(mode) {
-            case mode == ImageMode.RGB || mode == ImageMode.GRAYSCALE:
+            case RGB, GRAYSCALE:
                 return new Color(
                     (val>>16)&0xFF,
                     (val>>8)&0xFF,
@@ -111,8 +112,12 @@ public class ColorHelper {
         return range(i, 0, 255);
     }
 
+    public static int truncate(float i) {
+        return range((int) i, 0, 255);
+    }
+
     public static int calculateIntensityFake(Color c) {
-        return 0.299*c.getRed() + 0.587*c.getGreen() + 0.114*c.getBlue();
+        return (int) (0.299*c.getRed() + 0.587*c.getGreen() + 0.114*c.getBlue());
     }
 
     public static int calculateIntensity(Color c) {
