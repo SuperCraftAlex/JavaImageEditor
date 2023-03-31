@@ -2,6 +2,9 @@ package at.alex_s168.imageeditor.ui;
 
 import at.alex_s168.imageeditor.ImageEditor;
 import at.alex_s168.imageeditor.features.image.FeatureImageColor;
+import at.alex_s168.imageeditor.ui.File.UIFileNew;
+import at.alex_s168.imageeditor.ui.image.adjust.UIAdjustBrightnessAndContrast;
+import at.alex_s168.imageeditor.ui.image.adjust.UIAdjustColorReplace;
 import at.alex_s168.imageeditor.util.Translator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -57,6 +60,7 @@ public class Editor {
         fileTab.setText (Translator.translate("editor.menu.file"));
         Menu fileMenu = new Menu(shell, SWT.DROP_DOWN);
         fileTab.setMenu(fileMenu);
+        UIFileNew.genFileNewButton(fileMenu, shell, shell, display);
         MenuItem saveAsOpt = new MenuItem(fileMenu, SWT.PUSH);
         saveAsOpt.setText(Translator.translate("editor.menu.file.save_as"));
         saveAsOpt.addSelectionListener(new SelectionAdapter() {
@@ -81,25 +85,43 @@ public class Editor {
                 loadFile();
             }
         });
+        new MenuItem(fileMenu, SWT.SEPARATOR);
+        MenuItem settingsOpt = new MenuItem(fileMenu, SWT.PUSH);
+        settingsOpt.setText(Translator.translate("editor.menu.file.settings"));
+        settingsOpt.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                //todo
+            }
+        });
 
         MenuItem imageTab = new MenuItem (titleBar, SWT.CASCADE);
         imageTab.setText (Translator.translate("editor.menu.image"));
         Menu imageMenu = new Menu(shell, SWT.DROP_DOWN);
         imageTab.setMenu(imageMenu);
 
-        MenuItem imageColorTab = new MenuItem (imageMenu, SWT.CASCADE);
+        MenuItem imageAdjustTab = new MenuItem (imageMenu, SWT.CASCADE);
+        imageAdjustTab.setText (Translator.translate("editor.menu.image.adjust"));
+        Menu imageAdjustMenu = new Menu(shell, SWT.DROP_DOWN);
+        imageAdjustTab.setMenu(imageAdjustMenu);
+
+        UIAdjustBrightnessAndContrast.genImageBrightnesAndContrastButton(imageAdjustMenu, display, shell);
+
+        new MenuItem(imageAdjustMenu, SWT.SEPARATOR);
+
+        UIAdjustColorReplace.genImageColorReplaceButton(imageAdjustMenu, shell, display);
+
+        new MenuItem(imageAdjustMenu, SWT.SEPARATOR);
+
+        MenuItem imageAdjustInvertOpt = new MenuItem(imageAdjustMenu, SWT.PUSH);
+        imageAdjustInvertOpt.setText(Translator.translate("editor.menu.image.adjust.invert"));
+        imageAdjustInvertOpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {FeatureImageColor.colorInvert();}});
+
+
+        MenuItem imageColorTab = new MenuItem (imageAdjustMenu, SWT.CASCADE);
         imageColorTab.setText (Translator.translate("editor.menu.image.color"));
         Menu imageColorMenu = new Menu(shell, SWT.DROP_DOWN);
         imageColorTab.setMenu(imageColorMenu);
-
-        MenuItem imageColorInvertOpt = new MenuItem(imageColorMenu, SWT.PUSH);
-        imageColorInvertOpt.setText(Translator.translate("editor.menu.image.color.invert"));
-        imageColorInvertOpt.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                FeatureImageColor.colorInvert();
-            }
-        });
 
         MenuItem imageColorChannelTab = new MenuItem (imageColorMenu, SWT.CASCADE);
         imageColorChannelTab.setText (Translator.translate("editor.menu.image.color.channel"));
@@ -137,139 +159,6 @@ public class Editor {
         MenuItem imageColorChannelRemoveBOpt = new MenuItem(imageColorChannelRemoveMenu, SWT.PUSH);
         imageColorChannelRemoveBOpt.setText(Translator.translate("editor.menu.image.color.channel.remove.B"));
         imageColorChannelRemoveBOpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {FeatureImageColor.channelRemoveB();}});
-
-        MenuItem imageColorBrightnessOpt = new MenuItem(imageColorMenu, SWT.PUSH);
-        imageColorBrightnessOpt.setText(Translator.translate("editor.menu.image.color.brightness"));
-        imageColorBrightnessOpt.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                Shell w = new Shell(display);
-                w.setSize(shell.getSize().x / 3, shell.getSize().y / 3);
-                w.setText(Translator.translate("editor.window.image.color.brightness"));
-                w.setLayout(new BorderLayout());
-
-                w.addFocusListener(new FocusListener() {
-                    public void focusLost(FocusEvent e) {}
-                    public void focusGained(FocusEvent e) {}
-                });
-
-                final int[] m = {1};
-
-                generateBottomButtons(w, new SelectionListener() {
-                    @Override public void widgetSelected(SelectionEvent e) { FeatureImageColor.colorBrightness((double) m[0] / 100); }
-                    @Override public void widgetDefaultSelected(SelectionEvent e) {}
-                });
-
-                Composite settings = new Composite(w, SWT.NONE);
-                settings.setLayoutData(new BorderData(SWT.CENTER, SWT.DEFAULT, SWT.CENTER));
-                settings.setLayout(new BorderLayout());
-
-                final Label t = new Label(settings, SWT.BORDER);
-                t.setText(Translator.translate("brightness"));
-
-                final Slider brightnessSlide = new Slider(settings, SWT.HORIZONTAL);
-                brightnessSlide.setMinimum(20);
-                brightnessSlide.setMaximum(200);
-                brightnessSlide.setIncrement(1);
-                brightnessSlide.setSelection(100);
-
-                brightnessSlide.addSelectionListener(new SelectionAdapter() {
-                    public void widgetSelected(SelectionEvent e) {
-                        m[0] = brightnessSlide.getSelection();
-                    }
-                });
-
-                w.open();
-            }
-        });
-
-        MenuItem imageColorReplaceOpt = new MenuItem(imageColorMenu, SWT.PUSH);
-        imageColorReplaceOpt.setText(Translator.translate("editor.menu.image.color.replace"));
-        imageColorReplaceOpt.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                Shell w = new Shell(display);
-                w.setSize(shell.getSize().x / 3, shell.getSize().y / 3);
-                w.setText(Translator.translate("editor.window.image.color.replace"));
-                w.setLayout(new BorderLayout());
-
-                w.addFocusListener(new FocusListener() {
-                    public void focusLost(FocusEvent e) {}
-                    public void focusGained(FocusEvent e) {}
-                });
-
-                final Color[] c1 = {new Color(255, 255, 255)};
-                final Color[] c2 = {new Color(255, 255, 255)};
-                final int[] tolerance = {0};
-                final boolean[] smartReplace = {false};
-
-                generateBottomButtons(w, new SelectionListener() {
-                    @Override public void widgetSelected(SelectionEvent e) { FeatureImageColor.colorReplace(c1[0], c2[0], tolerance[0], smartReplace[0]); }
-                    @Override public void widgetDefaultSelected(SelectionEvent e) {}
-                });
-
-                Composite colors = new Composite(w, SWT.NONE);
-                colors.setLayoutData(new BorderData(SWT.UP, SWT.DEFAULT, SWT.DEFAULT));
-                colors.setLayout(new BorderLayout());
-
-                final Label color1Label = new Label(colors, SWT.TOP);
-                color1Label.setLayoutData(new BorderData(SWT.TOP));
-                color1Label.setText("                              ");
-                color1Label.setBackground(c1[0]);
-
-                Button color1Button = new Button(colors, SWT.PUSH);
-                color1Button.setText(Translator.translate("editor.menu.color.change"));
-                color1Button.setLayoutData(new BorderData(SWT.TOP));
-                color1Button.addSelectionListener(new SelectionAdapter() {
-                    public void widgetSelected(SelectionEvent event) {ColorDialog dlg = new ColorDialog(shell);dlg.setRGB(color1Label.getBackground().getRGB()); dlg.setText(Translator.translate("editor.window.color.select"));RGB rgb = dlg.open(); if (rgb != null) {c1[0].dispose(); c1[0] = new Color(shell.getDisplay(), rgb);color1Label.setBackground(c1[0]);} w.setActive(); }
-                });
-
-                final Label color2Label = new Label(colors, SWT.BOTTOM);
-                color2Label.setLayoutData(new BorderData(SWT.BOTTOM));
-                color2Label.setText("                              ");
-                color2Label.setBackground(c1[0]);
-
-                Button color2Button = new Button(colors, SWT.PUSH);
-                color2Button.setText(Translator.translate("editor.menu.color.change"));
-                color2Button.setLayoutData(new BorderData(SWT.BOTTOM));
-                color2Button.addSelectionListener(new SelectionAdapter() {
-                    public void widgetSelected(SelectionEvent event) {ColorDialog dlg = new ColorDialog(shell);dlg.setRGB(color1Label.getBackground().getRGB()); dlg.setText(Translator.translate("editor.window.color.select"));RGB rgb = dlg.open(); if (rgb != null) {c2[0].dispose(); c2[0] = new Color(shell.getDisplay(), rgb);color2Label.setBackground(c2[0]);} w.setActive(); }
-                });
-
-                //
-
-                Composite settings = new Composite(w, SWT.NONE);
-                settings.setLayoutData(new BorderData(SWT.CENTER, SWT.DEFAULT, SWT.CENTER));
-                settings.setLayout(new BorderLayout());
-
-                final Label t = new Label(settings, SWT.BORDER);
-                t.setText(Translator.translate("tolerance"));
-
-                final Slider toleranceSlide = new Slider(settings, SWT.HORIZONTAL);
-                toleranceSlide.setMinimum(0);
-                toleranceSlide.setMaximum(780);
-                toleranceSlide.setIncrement(1);
-
-                toleranceSlide.addSelectionListener(new SelectionAdapter() {
-                    public void widgetSelected(SelectionEvent e) {
-                        tolerance[0] = toleranceSlide.getSelection();
-                    }
-                });
-
-                Button smartReplaceCheckBox = new Button(settings, SWT.CHECK);
-                smartReplaceCheckBox.setLayoutData(new BorderData(SWT.BOTTOM, SWT.DEFAULT, SWT.DEFAULT));
-                smartReplaceCheckBox.setText(Translator.translate("editor.window.image.color.replace.smartreplace"));
-                smartReplaceCheckBox.addSelectionListener(new SelectionAdapter() {
-                    @Override
-                    public void widgetSelected(SelectionEvent event) {
-                        Button btn = (Button) event.getSource();
-                        smartReplace[0] = btn.getSelection();
-                    }
-                });
-
-                w.open();
-            }
-        });
 
         // Left tool group
 
@@ -383,39 +272,6 @@ public class Editor {
 
         this.shell.open();
         updateTitle();
-    }
-
-    private void generateBottomButtons(Shell w, SelectionListener ok) {
-
-        Composite bottomButtons = new Composite(w, SWT.NONE);
-        bottomButtons.setLayoutData(new BorderData(SWT.BOTTOM, SWT.DEFAULT, SWT.DEFAULT));
-        bottomButtons.setLayout(new BorderLayout());
-
-        final Button okButton = new Button(bottomButtons, SWT.NONE);
-        okButton.setLayoutData(new BorderData(SWT.LEFT, SWT.CENTER, SWT.DEFAULT));
-        okButton.setText(Translator.translate("window.ok"));
-        okButton.addSelectionListener(new SelectionListener() {
-            public void widgetSelected(SelectionEvent event) {
-                w.close();
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {}
-        });
-        okButton.addSelectionListener(ok);
-
-        final Button cancelButton = new Button(bottomButtons, SWT.NONE);
-        cancelButton.setLayoutData(new BorderData(SWT.RIGHT, SWT.CENTER, SWT.DEFAULT));
-        cancelButton.setText(Translator.translate("window.cancel"));
-        cancelButton.addSelectionListener(new SelectionListener() {
-            public void widgetSelected(SelectionEvent event) {
-                w.close();
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {}
-        });
-
     }
 
     public void updateTitle() {

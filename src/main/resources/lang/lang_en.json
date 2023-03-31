@@ -1,9 +1,11 @@
 {
 
   "editor.menu.file": "File",
+  "editor.menu.file.new": "New...",
   "editor.menu.file.save": "Save",
-  "editor.menu.file.save_as": "Save as ...",
-  "editor.menu.file.load": "Load ...",
+  "editor.menu.file.save_as": "Save as...",
+  "editor.menu.file.load": "Open...",
+  "editor.menu.file.settings": "Settings",
 
   "editor.window.info.override_request": "This File already exists. \nDo you want to override it?",
   "editor.window.info": "Info",
@@ -16,13 +18,17 @@
   "window.ok": "Ok",
   "window.cancel": "Cancel",
   "brightness": "Brightness",
+  "contrast": "Contrast",
   "tolerance": "Tolerance",
+  "change_color": "Change Color",
 
   "editor.menu.image": "Image",
+  "editor.menu.image.adjust": "Adjust",
+  "editor.menu.image.adjust.brightness": "Brightness / Contrast",
+  "editor.menu.image.adjust.invert": "Invert",
+
+  "editor.menu.image.adjust.color_replace": "Replace Color",
   "editor.menu.image.color": "Color",
-  "editor.menu.image.color.invert": "Invert",
-  "editor.menu.image.color.brightness": "Brightness",
-  "editor.menu.image.color.replace": "Replace",
   "editor.menu.image.color.channel": "Channel",
   "editor.menu.image.color.channel.remove": "Remove Channel",
   "editor.menu.image.color.channel.remove.R": "Red",
@@ -33,7 +39,7 @@
   "editor.menu.image.color.channel.rotate.CW": "Clockwise",
   "editor.menu.image.color.channel.rotate.CCW": "Counterclockwise",
 
-  "editor.window.image.color.brightness": "Change Brightness",
+  "editor.window.image.adjust.brightness": "Change Brightness / Contast",
   "editor.window.image.color.replace": "Replace Color",
-  "editor.window.image.color.replace.smartreplace": "Smart replace"
+  "editor.window.image.adjust.color_replace.smartreplace": "Smart replace"
 }

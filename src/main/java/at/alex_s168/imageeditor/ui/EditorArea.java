@@ -3,6 +3,8 @@ package at.alex_s168.imageeditor.ui;
 import at.alex_s168.imageeditor.ImageEditor;
 import at.alex_s168.imageeditor.api.AABB;
 import at.alex_s168.imageeditor.api.PixelMap;
+import at.alex_s168.imageeditor.util.ClipboardUtil;
+import at.alex_s168.imageeditor.util.ColorHelper;
 import at.alex_s168.imageeditor.util.ImagePixelHelper;
 import static at.alex_s168.imageeditor.util.GLHelper.*;
 import de.m_marvin.logicsim.ui.TextRenderer;
@@ -294,6 +296,18 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 		}
 	}
 
+	public void newFile(int sizeX, int sizeY) {
+		int[] pix = new int[sizeX * sizeY];
+
+		for (int i = 0; i < pix.length; i++) {
+			pix[i] = ColorHelper.colorConvert(255,0,0);
+		}
+
+		this.rOut = new PixelMap(sizeX, sizeY, pix);
+
+		update();
+	}
+
 	public void copyToClipboard(AABB aabb) {
 		int xLenght = (int) aabb.getWidth();
 		int yLength = (int) aabb.getHeight();
@@ -312,5 +326,4 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 	public static EditorArea getSelf() {
 		return ImageEditor.getInstance().getEditor().editorArea;
 	}
-
 }

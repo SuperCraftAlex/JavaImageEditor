@@ -1,4 +1,4 @@
-package at.alex_s168.imageeditor.ui;
+package at.alex_s168.imageeditor.util;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
