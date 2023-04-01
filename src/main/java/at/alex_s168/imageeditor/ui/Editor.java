@@ -165,7 +165,7 @@ public class Editor {
         gridData.grabExcessHorizontalSpace = true;
         sliderX.setLayoutData(gridData);
         sliderX.setMinimum(0);
-        sliderX.setMaximum(1);
+        sliderX.setMaximum(0);
         sliderX.setIncrement(1);
         sliderX.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -176,7 +176,7 @@ public class Editor {
 
         sliderY = new Slider(groupRight, SWT.VERTICAL);
         sliderY.setMinimum(0);
-        sliderY.setMaximum(1);
+        sliderY.setMaximum(0);
         sliderY.setIncrement(1);
         sliderY.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {

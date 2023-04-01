@@ -3,7 +3,6 @@ package at.alex_s168.imageeditor.util;
 import de.m_marvin.univec.impl.Vec2d;
 import de.m_marvin.univec.impl.Vec2f;
 import de.m_marvin.univec.impl.Vec2i;
-import de.m_marvin.univec.impl.Vec3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL33;
 

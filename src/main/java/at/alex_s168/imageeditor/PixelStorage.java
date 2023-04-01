@@ -65,7 +65,6 @@ public class PixelStorage {
     private void updateTexture(int[] pixels, int width, int height) {
         GL33.glBindTexture(GL33.GL_TEXTURE_2D, textureID);
         GL33.glTexImage2D(GL33.GL_TEXTURE_2D, 0, GL33.GL_RGBA8, width, height, 0,  GL33.GL_BGRA, GL33.GL_UNSIGNED_INT_8_8_8_8_REV, pixels);
-        GL33.glBindTexture(GL33.GL_TEXTURE_2D, 0);
     }
 
     private void updateTexture() {

@@ -152,6 +152,8 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 
 		PixelStorage.getSelf().tick(x, y, scale);
 
+		GL33.glBindTexture(GL33.GL_TEXTURE_2D, 0);
+
 		if(mouseDown) {
 			mouseDragPosCache.add(realMousePosition);
 
