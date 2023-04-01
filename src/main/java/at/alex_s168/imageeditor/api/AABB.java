@@ -1,16 +1,17 @@
 package at.alex_s168.imageeditor.api;
 
+import at.alex_s168.imageeditor.util.VecUtil;
 import de.m_marvin.univec.impl.Vec2d;
 import de.m_marvin.univec.impl.Vec2i;
 
 public class AABB {
 
-    public Vec2d A;
-    public Vec2d B;
+    public Vec2i A;
+    public Vec2i B;
 
     public AABB() {}
 
-    public AABB(Vec2d a, Vec2d b) {
+    public AABB(Vec2i a, Vec2i b) {
         A = a;
         B = b;
     }
@@ -31,18 +32,21 @@ public class AABB {
         B = null;
     }
 
-    public double getWidth() {
+    public int getWidth() {
         return Math.abs(A.x - B.x);
     }
 
-    public double getHeight() {
+    public int getHeight() {
         return Math.abs(A.y - B.y);
     }
 
-    public boolean inBounds(Vec2d vec) {
+    public boolean inBounds(int x, int y) {
         return (
-                vec.x >= A.x && vec.x <= B.x && vec.y >= A.y && vec.y <= B.y
+                x > A.x && x < B.x && y > A.y && y < B.y
         );
+    }
+    public boolean inBounds(Vec2i vec) {
+        return inBounds(vec.x, vec.y);
     }
 
     /**
@@ -52,4 +56,8 @@ public class AABB {
        return new Vec2i(B.add(v));
     }
 
+    public void maxI(AABB other) {
+        A = VecUtil.min(A, other.A);
+        B = VecUtil.max(B, other.B);
+    }
 }

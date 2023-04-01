@@ -1,6 +1,8 @@
 package at.alex_s168.imageeditor.features.keybinds;
 
 import at.alex_s168.imageeditor.ImageEditor;
+import at.alex_s168.imageeditor.PixelStorage;
+import at.alex_s168.imageeditor.ui.Editor;
 import at.alex_s168.imageeditor.ui.EditorArea;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -10,12 +12,14 @@ public class FeatureKeybinds {
     public static void keyReleased(KeyEvent e) {
         String key = Character.toString(e.character);
         if(key.equals("+")) {
-            EditorArea.getSelf().scale += 0.1;
-            EditorArea.getSelf().update();
+            EditorArea.getSelf().scale = Math.min(9, 1.1 * EditorArea.getSelf().scale);
+            Editor.getSelf().zoomPercentageInput.setText("" + (int) (EditorArea.getSelf().scale * 100));
+            PixelStorage.getSelf().updateCurrent();
         }
         if(key.equals("-")) {
-            EditorArea.getSelf().scale -= 0.1;
-            EditorArea.getSelf().update();
+            EditorArea.getSelf().scale = Math.max(0.1, 0.9 * EditorArea.getSelf().scale);
+            Editor.getSelf().zoomPercentageInput.setText("" + (int) (EditorArea.getSelf().scale * 100));
+            PixelStorage.getSelf().updateCurrent();
         }
         if(e.keyCode == SWT.ESC) {
             EditorArea.getSelf().selection.clear();

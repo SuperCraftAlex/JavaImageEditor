@@ -76,13 +76,13 @@ public class GLHelper {
         GL11.glEnd();
     }
 
-    public static void drawRectangleNew(Vec2d v, Vec2d v2, float r, float g, float b, float a) {
+    public static void drawRectangleNew(Vec2i v, Vec2i v2, float r, float g, float b, float a) {
         GL33.glColor4f(r, g, b, a);
 
-        int x = (int) v.x;
-        int y = (int) v.y;
-        int x2 = (int) v2.x;
-        int y2 = (int) v2.y;
+        int x = v.x;
+        int y = v.y;
+        int x2 =  v2.x;
+        int y2 =  v2.y;
 
         GL11.glBegin(GL11.GL_QUADS);
         GL11.glVertex2d(x, y);

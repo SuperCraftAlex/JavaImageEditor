@@ -1,7 +1,7 @@
 package at.alex_s168.imageeditor.ui;
 
 import at.alex_s168.imageeditor.ImageEditor;
-import at.alex_s168.imageeditor.features.image.FeatureImageColor;
+import at.alex_s168.imageeditor.features.image.FeatureImageAdjust;
 import at.alex_s168.imageeditor.ui.File.UIFileNew;
 import at.alex_s168.imageeditor.ui.image.adjust.UIAdjustBrightnessAndContrast;
 import at.alex_s168.imageeditor.ui.image.adjust.UIAdjustColorReplace;
@@ -11,9 +11,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.layout.BorderData;
-import org.eclipse.swt.layout.BorderLayout;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 import java.io.*;
@@ -29,15 +27,13 @@ public class Editor {
     protected Tree partSelector;
     public EditorArea editorArea;
 
-    public Color colorPrimary = new Color(0, 0, 0, 255);
-
-    public Color colorSecondary = new Color(255, 255, 255, 255);
-
     public int scrollX = 0;
     public int scrollY = 0;
 
     public final Slider sliderX;
     public final Slider sliderY;
+
+    public final Text zoomPercentageInput;
 
     public static Image decodeImage(String imageString) {
         return new Image(ImageEditor.getInstance().getDisplay(), new ImageData(new ByteArrayInputStream(Base64.getDecoder().decode(imageString))));
@@ -115,50 +111,9 @@ public class Editor {
 
         MenuItem imageAdjustInvertOpt = new MenuItem(imageAdjustMenu, SWT.PUSH);
         imageAdjustInvertOpt.setText(Translator.translate("editor.menu.image.adjust.invert"));
-        imageAdjustInvertOpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {FeatureImageColor.colorInvert();}});
-
-
-        MenuItem imageColorTab = new MenuItem (imageAdjustMenu, SWT.CASCADE);
-        imageColorTab.setText (Translator.translate("editor.menu.image.color"));
-        Menu imageColorMenu = new Menu(shell, SWT.DROP_DOWN);
-        imageColorTab.setMenu(imageColorMenu);
-
-        MenuItem imageColorChannelTab = new MenuItem (imageColorMenu, SWT.CASCADE);
-        imageColorChannelTab.setText (Translator.translate("editor.menu.image.color.channel"));
-        Menu imageColorChannelMenu = new Menu(shell, SWT.DROP_DOWN);
-        imageColorChannelTab.setMenu(imageColorChannelMenu);
-
-        MenuItem imageColorChannelRotateTab = new MenuItem (imageColorChannelMenu, SWT.CASCADE);
-        imageColorChannelRotateTab.setText (Translator.translate("editor.menu.image.color.channel.rotate"));
-        Menu imageColorChannelRotateMenu = new Menu(shell, SWT.DROP_DOWN);
-        imageColorChannelRotateTab.setMenu(imageColorChannelRotateMenu);
-
-        MenuItem imageColorChannelRotateCWOpt = new MenuItem(imageColorChannelRotateMenu, SWT.PUSH);
-        imageColorChannelRotateCWOpt.setText(Translator.translate("editor.menu.image.color.channel.rotate.CW"));
-        imageColorChannelRotateCWOpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {
-            FeatureImageColor.channelRotateCW();}});
-
-        MenuItem imageColorChannelRotateCCWOpt = new MenuItem(imageColorChannelRotateMenu, SWT.PUSH);
-        imageColorChannelRotateCCWOpt.setText(Translator.translate("editor.menu.image.color.channel.rotate.CCW"));
-        imageColorChannelRotateCCWOpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {FeatureImageColor.channelRotateCCW();}});
-
-
-        MenuItem imageColorChannelRemoveTab = new MenuItem (imageColorChannelMenu, SWT.CASCADE);
-        imageColorChannelRemoveTab.setText (Translator.translate("editor.menu.image.color.channel.remove"));
-        Menu imageColorChannelRemoveMenu = new Menu(shell, SWT.DROP_DOWN);
-        imageColorChannelRemoveTab.setMenu(imageColorChannelRemoveMenu);
-
-        MenuItem imageColorChannelRemoveROpt = new MenuItem(imageColorChannelRemoveMenu, SWT.PUSH);
-        imageColorChannelRemoveROpt.setText(Translator.translate("editor.menu.image.color.channel.remove.R"));
-        imageColorChannelRemoveROpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {FeatureImageColor.channelRemoveR();}});
-
-        MenuItem imageColorChannelRemoveGOpt = new MenuItem(imageColorChannelRemoveMenu, SWT.PUSH);
-        imageColorChannelRemoveGOpt.setText(Translator.translate("editor.menu.image.color.channel.remove.G"));
-        imageColorChannelRemoveGOpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {FeatureImageColor.channelRemoveG();}});
-
-        MenuItem imageColorChannelRemoveBOpt = new MenuItem(imageColorChannelRemoveMenu, SWT.PUSH);
-        imageColorChannelRemoveBOpt.setText(Translator.translate("editor.menu.image.color.channel.remove.B"));
-        imageColorChannelRemoveBOpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {FeatureImageColor.channelRemoveB();}});
+        imageAdjustInvertOpt.addSelectionListener(new SelectionAdapter() {@Override public void widgetSelected(SelectionEvent e) {
+            FeatureImageAdjust.colorInvert();
+        }});
 
         // Left tool group
 
@@ -166,63 +121,7 @@ public class Editor {
         groupLeft.setLayoutData(new BorderData(SWT.LEFT, SWT.DEFAULT, SWT.DEFAULT));
         groupLeft.setLayout(new BorderLayout());
 
-        // - color
-        final Group groupColor = new Group(groupLeft, SWT.NONE);
-        groupColor.setLayoutData(new BorderData(SWT.BOTTOM));
-        groupColor.setLayout(new BorderLayout());
-
-        final Group groupColorPrimary = new Group(groupColor, SWT.NONE);
-        groupColorPrimary.setLayoutData(new BorderData(SWT.TOP));
-        groupColorPrimary.setLayout(new BorderLayout());
-        groupColorPrimary.setText(Translator.translate("editor.menu.color.primary"));
-
-        final Label colorPrimaryLabel = new Label(groupColorPrimary, SWT.NONE);
-        colorPrimaryLabel.setText("                              ");
-        colorPrimaryLabel.setBackground(colorPrimary);
-
-        Button colorPrimaryButton = new Button(groupColorPrimary, SWT.PUSH);
-        colorPrimaryButton.setText(Translator.translate("editor.menu.color.change"));
-        colorPrimaryButton.setLayoutData(new BorderData(SWT.RIGHT));
-        colorPrimaryButton.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent event) {
-                ColorDialog dlg = new ColorDialog(shell);
-                dlg.setRGB(colorPrimaryLabel.getBackground().getRGB());
-                dlg.setText(Translator.translate("editor.window.color.select"));
-                RGB rgb = dlg.open();
-                if (rgb != null) {
-                    colorPrimary.dispose();
-                    colorPrimary = new Color(shell.getDisplay(), rgb);
-                    colorPrimaryLabel.setBackground(colorPrimary);
-                }
-            }
-        });
-
-        //todo: secondary color stuff not shown
-        final Group groupColorSecondary = new Group(groupColor, SWT.NONE);
-        groupColorSecondary.setLayoutData(new BorderData(SWT.BOTTOM));
-        groupColorSecondary.setLayout(new BorderLayout());
-        groupColorSecondary.setText(Translator.translate("editor.menu.color.secondary"));
-
-        final Label colorSecondaryLabel = new Label(groupColorSecondary, SWT.NONE);
-        colorSecondaryLabel.setText("                              ");
-        colorSecondaryLabel.setBackground(colorSecondary);
-
-        Button colorSecondaryButton = new Button(groupColorSecondary, SWT.PUSH);
-        colorSecondaryButton.setText(Translator.translate("editor.menu.color.change"));
-        colorSecondaryButton.setLayoutData(new BorderData(SWT.RIGHT));
-        colorSecondaryButton.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent event) {
-                ColorDialog dlg = new ColorDialog(shell);
-                dlg.setRGB(colorSecondaryLabel.getBackground().getRGB());
-                dlg.setText(Translator.translate("editor.window.color.select"));
-                RGB rgb = dlg.open();
-                if (rgb != null) {
-                    colorSecondary.dispose();
-                    colorSecondary = new Color(shell.getDisplay(), rgb);
-                    colorSecondaryLabel.setBackground(colorSecondary);
-                }
-            }
-        });
+        UIMainColor.genColorSidebar(shell, groupLeft);
 
         final Composite editor = new Composite(shell, SWT.NONE);
         editor.setLayoutData(new BorderData(SWT.CENTER, SWT.DEFAULT, SWT.DEFAULT));
@@ -234,19 +133,34 @@ public class Editor {
         this.editorArea.setLocation(50, 20);
         this.editorArea.setBackground(new Color(128, 128, 0));
 
-        // - sliders
         final Composite groupBottom = new Composite(editor, SWT.NONE);
         groupBottom.setLayoutData(new BorderData(SWT.BOTTOM, SWT.DEFAULT, SWT.DEFAULT));
-        groupBottom.setLayout(new BorderLayout());
+        GridLayout l = new GridLayout();
+        l.numColumns = 3;
+        groupBottom.setLayout(l);
 
         final Composite groupRight = new Composite(editor, SWT.NONE);
         groupRight.setLayoutData(new BorderData(SWT.RIGHT, SWT.DEFAULT, SWT.DEFAULT));
         groupRight.setLayout(new BorderLayout());
 
+        zoomPercentageInput = new Text(groupBottom, SWT.LEFT);
+        zoomPercentageInput.setTextLimit(3);
+        zoomPercentageInput.setSize(100,zoomPercentageInput.getSize().y);
+        zoomPercentageInput.setText("100");
+        zoomPercentageInput.addModifyListener(e -> {
+            try {
+                EditorArea.getSelf().scale = Math.max(0.1, Math.min(9, (double) Integer.parseInt(zoomPercentageInput.getText()) / 100));
+            } catch (Exception ignored) {}
+        }
+        );
+
+        // - sliders
         //todo: sliders weird
-        sliderX = new Slider(groupBottom, SWT.BOTTOM);
-        groupColorSecondary.setLayoutData(new BorderData(SWT.BOTTOM));
-        groupColorSecondary.setLayout(new BorderLayout());
+        sliderX = new Slider(groupBottom, SWT.NONE);
+        GridData gridData = new GridData();
+        gridData.horizontalAlignment = GridData.FILL;
+        gridData.grabExcessHorizontalSpace = true;
+        sliderX.setLayoutData(gridData);
         sliderX.setMinimum(0);
         sliderX.setMaximum(1);
         sliderX.setIncrement(1);
@@ -258,8 +172,6 @@ public class Editor {
         });
 
         sliderY = new Slider(groupRight, SWT.VERTICAL);
-        groupColorSecondary.setLayoutData(new BorderData(SWT.VERTICAL));
-        groupColorSecondary.setLayout(new BorderLayout());
         sliderY.setMinimum(0);
         sliderY.setMaximum(1);
         sliderY.setIncrement(1);

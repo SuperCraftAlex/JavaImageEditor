@@ -9,11 +9,13 @@ import at.alex_s168.imageeditor.util.ClipboardUtil;
 import at.alex_s168.imageeditor.util.ColorHelper;
 import at.alex_s168.imageeditor.util.ImagePixelHelper;
 import static at.alex_s168.imageeditor.util.GLHelper.*;
+
+import at.alex_s168.imageeditor.util.VecUtil;
 import de.m_marvin.logicsim.ui.TextRenderer;
 import de.m_marvin.univec.impl.Vec2d;
+import de.m_marvin.univec.impl.Vec2i;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.opengl.GLCanvas;
 import org.eclipse.swt.opengl.GLData;
@@ -39,26 +41,21 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 	protected GLCapabilities glCapabilities;
 	protected boolean resized;
 	protected boolean initialized = false;
-	protected int textureId;
 
 	protected boolean mouseDown = false;
 
-	protected Vec2d initialMousePosition;
+	protected Vec2i initialMousePosition;
 
-	protected Vec2d mousePosition;
-	protected Vec2d prevMousePosition;
-	protected Vec2d realMousePosition;
-	protected Vec2d prevRealMousePosition;
+	protected Vec2i mousePosition;
+	protected Vec2i prevMousePosition;
+	protected Vec2i realMousePosition;
+	protected Vec2i prevRealMousePosition;
 
 	public AABB selection = new AABB();
 
 	public double scale = 1;
 
-	public PixelMap rOut = new PixelMap();
-
-	protected boolean toUpdate = false;
-
-	public List<Vec2d> mouseDragPosCache = new ArrayList<>();
+	public List<Vec2i> mouseDragPosCache = new ArrayList<>();
 
 	public EditorArea(Composite parent) {
 		super(parent, SWT.NONE);
@@ -75,11 +72,11 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 
 	public void updateMousePos(MouseEvent e) {
 		prevMousePosition = mousePosition;
-		mousePosition=new Vec2d(e.x, e.y);
+		mousePosition=new Vec2i(e.x, e.y);
 	}
 
 	public void updateMouseInitialPos(MouseEvent e) {
-		initialMousePosition=new Vec2d(e.x, e.y);
+		initialMousePosition=new Vec2i(e.x, e.y);
 	}
 
 	@Override public void mouseUp(MouseEvent event) { mouseDown=false; updateMousePos(event); }
@@ -96,21 +93,10 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 	public void keyReleased(KeyEvent e) {
 		FeatureKeybinds.keyReleased(e);
 	}
-
-	public void update() {
-		this.toUpdate = true;
-	}
 	
 	protected void initOpenGL() {
 		this.glCanvas.setCurrent();
 		this.glCapabilities = GL.createCapabilities();
-
-		textureId = GL33.glGenTextures();
-		GL33.glEnable(GL33.GL_TEXTURE_2D);
-		GL33.glBindTexture(GL33.GL_TEXTURE_2D, textureId);
-		GL33.glTexParameterf(GL33.GL_TEXTURE_2D, GL33.GL_TEXTURE_MIN_FILTER, GL33.GL_NEAREST);
-		GL33.glTexParameterf(GL33.GL_TEXTURE_2D, GL33.GL_TEXTURE_MAG_FILTER, GL33.GL_NEAREST);
-		GL33.glBindTexture(GL33.GL_TEXTURE_2D, 0);
 
 		GL33.glMatrixMode(GL33.GL_PROJECTION);
 		GL33.glLoadIdentity();
@@ -123,21 +109,9 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 		GL33.glEnable(GL33.GL_BLEND);
 		GL33.glBlendFunc(GL33.GL_SRC_ALPHA, GL33.GL_ONE_MINUS_SRC_ALPHA);
 
-		update();
-
         this.glCanvas.addDisposeListener((e) -> TextRenderer.cleanUpOpenGL());
 	    this.resized = true;
 	    this.initialized = true;
-	}
-
-	public void updateImage(int[] pixels, int width, int height) {
-		GL33.glBindTexture(GL33.GL_TEXTURE_2D, textureId);
-		GL33.glTexImage2D(GL33.GL_TEXTURE_2D, 0, GL33.GL_RGBA8, width, height, 0,  GL33.GL_RGBA, GL33.GL_UNSIGNED_INT_8_8_8_8_REV, pixels);
-		GL33.glBindTexture(GL33.GL_TEXTURE_2D, 0);
-	}
-
-	public void updateImage(PixelMap m) {
-		updateImage(m.pix, m.getWidth(), m.getHeight());
 	}
 
 	public void render() {
@@ -161,27 +135,19 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 
 		Editor editor = ImageEditor.getInstance().getEditor();
 
-		int w = (int) (rOut.getWidth() * scale);
-		int h = (int) (rOut.getHeight() * scale);
-
-		//todo
+		//todo: scroll
 		int x = 1 / (editor.scrollX + 1);
 		int y = 1 / (editor.scrollY + 1);
 
 		if(mousePosition != null) {
-			realMousePosition = mousePosition.sub((double) x, (double) y).div(scale);
+			realMousePosition = VecUtil.div(mousePosition.sub(x, y), scale);
 			if(prevMousePosition == null) {
 				prevMousePosition = mousePosition;
 			}
-			prevRealMousePosition = prevMousePosition.sub((double) x, (double) y).div(scale);
+			prevRealMousePosition = VecUtil.div(prevMousePosition.sub(x, y), scale);
 		}
 
-		if (toUpdate) {
-			updateNowImage();
-
-			toUpdate = false;
-		}
-		updateNowRender(x, y,w,h);
+		PixelStorage.getSelf().tick(x, y, scale);
 
 		if(mouseDown) {
 			mouseDragPosCache.add(realMousePosition);
@@ -204,10 +170,10 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 				mouseDragPosCache.clear();
 			}
 
-			// SELECTION START
-			Vec2d realInitialMousePosition = initialMousePosition.sub((double) x, (double) y).div(scale);
+		// SELECTION START
+			Vec2i realInitialMousePosition = VecUtil.div(initialMousePosition.sub(x, y), scale);
 
-			if(rOut.getBounds().inBounds(realInitialMousePosition) && rOut.getBounds().inBounds(realMousePosition)) {
+			if(PixelStorage.getSelf().visibleAABB.inBounds(realInitialMousePosition) && PixelStorage.getSelf().visibleAABB.inBounds(realMousePosition)) {
 				drawRectangleNew(initialMousePosition, mousePosition, 0.2f, 0.2f, 0.35f, 0.5f);
 				selection.A = realInitialMousePosition;
 				selection.B = realMousePosition;
@@ -220,56 +186,47 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 
 		if(!selection.empty()) {
 			drawRectangleNew(
-					selection.A.mul(scale).add((double) x, (double) y),
-					selection.B.mul(scale).add((double) x, (double) y),
-					.2f, 0.2f, 0.35f, 0.5f
+					VecUtil.mul(selection.A.add(x, y), scale),
+					VecUtil.mul(selection.B.add(x, y), scale),
+					0.2f, 0.2f, 0.35f, 0.5f
 			);
 		}
 		// SELECTION END
 
 		glCanvas.swapBuffers();
 
-		editor.sliderY.setMaximum(Math.max(0, h - getSize().y)+1);
-		editor.sliderX.setMaximum(Math.max(0, w - getSize().x)+1);
+		editor.sliderY.setMaximum(Math.max(0, PixelStorage.getSelf().visibleAABB.getHeight() - getSize().y)+1);
+		editor.sliderX.setMaximum(Math.max(0, PixelStorage.getSelf().visibleAABB.getWidth()  - getSize().x)+1);
 
-	}
-
-	private void updateNowImage() {
-		updateImage(rOut);
-	}
-
-	private void updateNowRender(int x, int y, int w, int h) {
-		GL33.glBindTexture(GL33.GL_TEXTURE_2D, textureId);
-
-		GL33.glColor4f(1, 1, 1, 1f);
-
-		GL33.glBegin(GL33.GL_QUADS);
-		GL33.glTexCoord2f(0, 0);
-		GL33.glVertex2f(x, y);
-		GL33.glTexCoord2f(1, 0);
-		GL33.glVertex2f(x + w, y);
-		GL33.glTexCoord2f(1, 1);
-		GL33.glVertex2f(x + w, y + h);
-		GL33.glTexCoord2f(0, 1);
-		GL33.glVertex2f(x, y + h);
-		GL33.glEnd();
 	}
 
 	public void openFile(File filePath) {
 		PixelStorage.getSelf().reset(ImagePixelHelper.getPixFromImage(filePath));
 
-		update();
+		PixelMap m = new PixelMap(100, 100);
+		m.pos = new Vec2i(100, 100);
+		Arrays.fill(m.pix, ColorHelper.colorConvert(255, 255, 255, 100));
+
+		PixelStorage.getSelf().addLayer(m);
+
+		PixelStorage.getSelf().updateCurrent();
 	}
 
 	public void saveFile(File filePath) {
-		int xLenght = rOut.getWidth();
-		int yLength = rOut.getHeight();
+		long timeStartOverlay = System.currentTimeMillis();
+		PixelMap m = PixelStorage.getSelf().overlayVisible();
+		long timeEndOverlay = System.currentTimeMillis();
+
+		System.out.println("Total overlay time: " + (timeEndOverlay-timeStartOverlay) + "ms");
+
+		int xLenght = m.getWidth();
+		int yLength = m.getHeight();
 
 		BufferedImage bi = new BufferedImage(xLenght, yLength, BufferedImage.TYPE_INT_BGR);
 
 		for(int x = 0; x < xLenght; x++) {
 			for(int y = 0; y < yLength; y++) {
-				bi.setRGB(x, y, rOut.get(x,y));
+				bi.setRGB(x, y, m.get(x,y));
 			}
 		}
 		try {
@@ -286,18 +243,18 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 
 		PixelStorage.getSelf().reset(new PixelMap(sizeX, sizeY, pix));
 
-		update();
+		PixelStorage.getSelf().updateCurrent();
 	}
 
 	public void copyToClipboard(AABB aabb) {
-		int xLenght = (int) aabb.getWidth();
-		int yLength = (int) aabb.getHeight();
+		int xLenght = aabb.getWidth();
+		int yLength = aabb.getHeight();
 
 		BufferedImage bi = new BufferedImage(xLenght, yLength, BufferedImage.TYPE_INT_BGR);
 
 		for(int x = 0; x < xLenght; x++) {
 			for(int y = 0; y < yLength; y++) {
-				bi.setRGB(x, y, rOut.get(x, y, aabb));
+				bi.setRGB(x, y, PixelStorage.getSelf().getCurrentPixelMap().get(x, y, aabb));
 			}
 		}
 

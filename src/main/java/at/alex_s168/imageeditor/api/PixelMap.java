@@ -20,6 +20,7 @@ public class PixelMap {
     public Vec2i pos = new Vec2i(0,0);
 
     public ImageMode mode;
+    public BlendMode blendMode = BlendMode.NORMAL;
 
     public int[] pix;
     public int[] alpha;
@@ -29,6 +30,7 @@ public class PixelMap {
         this.height = heightIn;
 
         this.mode  = ImageMode.RGB;
+        this.pix = new int[widthIn * heightIn];
     }
 
     public PixelMap(int widthIn, int heightIn, int[] pixIn) {
@@ -66,6 +68,10 @@ public class PixelMap {
         return pix[x+y*width];
     }
 
+    public int getPositional(int x, int y) {
+        return pix[(x - pos.x)+(y - pos.y)*width];
+    }
+
     public void set(int x, int y, int val) {
         if(x<= width && y <= height && x>0 && y>0)
             pix[x+y*width] = val;
@@ -92,7 +98,11 @@ public class PixelMap {
     }
 
     public AABB getBounds() {
-        return new AABB(new Vec2d(0,0), new Vec2d(width, height));
+        return new AABB(new Vec2i(0,0), new Vec2i(width, height));
+    }
+
+    public AABB getBoundsPositional() {
+        return new AABB(pos, pos.add(width, height));
     }
 
 }

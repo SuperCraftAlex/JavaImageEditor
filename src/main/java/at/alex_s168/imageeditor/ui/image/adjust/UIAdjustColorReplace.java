@@ -1,6 +1,6 @@
 package at.alex_s168.imageeditor.ui.image.adjust;
 
-import at.alex_s168.imageeditor.features.image.FeatureImageColor;
+import at.alex_s168.imageeditor.features.image.FeatureImageAdjust;
 import at.alex_s168.imageeditor.ui.UIBottomButtons;
 import at.alex_s168.imageeditor.util.Translator;
 import org.eclipse.swt.SWT;
@@ -36,7 +36,7 @@ public class UIAdjustColorReplace {
                 final boolean[] smartReplace = {false};
 
                 UIBottomButtons.generateBottomButtons(w, new SelectionListener() {
-                    @Override public void widgetSelected(SelectionEvent e) { FeatureImageColor.colorReplace(c1[0], c2[0], tolerance[0], smartReplace[0]); }
+                    @Override public void widgetSelected(SelectionEvent e) { FeatureImageAdjust.colorReplace(c1[0], c2[0], tolerance[0], smartReplace[0]); }
                     @Override public void widgetDefaultSelected(SelectionEvent e) {}
                 });
 

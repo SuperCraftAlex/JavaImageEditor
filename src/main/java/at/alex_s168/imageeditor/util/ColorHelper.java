@@ -5,6 +5,8 @@ import org.eclipse.swt.graphics.Color;
 
 public class ColorHelper {
 
+    //todo: Color#getRGBA()
+
     public static int colorConvert(float Red, float Green, float Blue){
         int R = Math.round(255 * Red);
         int G = Math.round(255 * Green);
@@ -49,22 +51,87 @@ public class ColorHelper {
         };
     }
 
+    public static boolean empty(Color c) {
+        if(c== null) {
+            return true;
+        }
+        return sum(c) == 0;
+    }
+
     public static Color sub(Color c1, Color c2) {
         return new Color(
-                Math.min(Math.abs(c1.getRed() - c2.getRed()),255),
-                Math.min(Math.abs(c1.getGreen() - c2.getGreen()),255),
-                Math.min(Math.abs(c1.getBlue() - c2.getBlue()),255),
-                Math.min(Math.abs(c1.getAlpha() - c2.getAlpha()),255)
+                truncate(c1.getRed() - c2.getRed()),
+                truncate(c1.getGreen() - c2.getGreen()),
+                truncate(c1.getBlue() - c2.getBlue())
         );
     }
 
     public static Color add(Color c1, Color c2) {
         return new Color(
-                Math.min(c1.getRed() + c2.getRed(),255),
-                Math.min(c1.getGreen() + c2.getGreen(),255),
-                Math.min(c1.getBlue() + c2.getBlue(),255),
-                Math.min(c1.getAlpha() + c2.getAlpha(), 255)
+                truncate(c1.getRed() + c2.getRed()),
+                truncate(c1.getGreen() + c2.getGreen()),
+                truncate(c1.getBlue() + c2.getBlue())
         );
+    }
+
+    public static Color mul(Color c1, Color c2) {
+        return new Color(
+                truncate(c1.getRed() * c2.getRed()),
+                truncate(c1.getGreen() * c2.getGreen()),
+                truncate(c1.getBlue() * c2.getBlue())
+        );
+    }
+    public static Color mul(Color c1, int val) {
+        return new Color(
+                truncate(c1.getRed()   * val ),
+                truncate(c1.getGreen() * val ),
+                truncate(c1.getBlue()  * val )
+        );
+    }
+
+    public static Color div(Color c1, Color c2) {
+        return new Color(
+                truncate(c1.getRed() / c2.getRed()     ),
+                truncate(c1.getGreen() / c2.getGreen() ),
+                truncate(c1.getBlue() / c2.getBlue()   )
+        );
+    }
+
+    public static Color div(Color c1, int val) {
+        return new Color(
+                truncate(c1.getRed() /   val),
+                truncate(c1.getGreen() / val),
+                truncate(c1.getBlue() /  val)
+        );
+    }
+
+    public static Color alpha(Color c1, int alpha) {
+        return new Color(
+                truncate(c1.getRed()  ),
+                truncate(c1.getGreen()),
+                truncate(c1.getBlue() ),
+                truncate(alpha        )
+        );
+    }
+
+    public static double red1(Color c) {
+        return (double)c.getRed() / 255;
+    }
+
+    public static double green1(Color c) {
+        return (double)c.getGreen() / 255;
+    }
+
+    public static double blue1(Color c) {
+        return (double)c.getBlue() / 255;
+    }
+
+    public static double alpha1(Color c) {
+        return (double)c.getAlpha() / 255;
+    }
+
+    public static int one(double d) {
+        return truncate((int) (d * 255));
     }
 
     public static int sum(Color c) {
@@ -100,14 +167,22 @@ public class ColorHelper {
         if(i<min) {
             return min;
         }
-        if(i>max) {
-            return max;
+        return Math.min(i, max);
+    }
+
+    public static double range(double i, double min, double max) {
+        if(i<min) {
+            return min;
         }
-        return i;
+        return Math.min(i, max);
     }
 
     public static int truncate(int i) {
         return range(i, 0, 255);
+    }
+
+    public static int truncateABS(int i) {
+        return range(Math.abs(i), 0, 255);
     }
 
     public static int truncate(double i) {
@@ -116,6 +191,10 @@ public class ColorHelper {
 
     public static int truncate(float i) {
         return range((int) i, 0, 255);
+    }
+
+    public static double truncate1(double i) {
+        return range(i , 0, 1);
     }
 
     public static int calculateIntensityFake(Color c) {

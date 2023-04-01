@@ -1,6 +1,7 @@
 package at.alex_s168.imageeditor.features.image;
 
-import at.alex_s168.imageeditor.ui.EditorArea;
+import at.alex_s168.imageeditor.PixelStorage;
+import at.alex_s168.imageeditor.util.ColorHelper;
 import org.eclipse.swt.graphics.Color;
 
 import static at.alex_s168.imageeditor.util.ColorHelper.colorConvert;
@@ -10,8 +11,8 @@ public class FeatureImageAdjust {
 
     public static void changeContrast(double val) {
         int it = 0;
-        for (int pixel : EditorArea.getSelf().rOut.pix) {
-            Color c = colorConvert(pixel, EditorArea.getSelf().rOut.mode);
+        for (int pixel : PixelStorage.getSelf().getCurrentPixelMap().pix) {
+            Color c = colorConvert(pixel, PixelStorage.getSelf().getCurrentPixelMap().mode);
 
             float factor = (float) (259 * (val + 255)) / (float) (255 * (259 - val));
 
@@ -22,12 +23,12 @@ public class FeatureImageAdjust {
 
             );
 
-            EditorArea.getSelf().rOut.pix[it] = colorConvert(c2);
+            PixelStorage.getSelf().getCurrentPixelMap().pix[it] = colorConvert(c2);
 
             it++;
         }
 
-        EditorArea.getSelf().update();
+        PixelStorage.getSelf().updateCurrent();
 
     }
 
@@ -35,8 +36,8 @@ public class FeatureImageAdjust {
         // if bugs check: https://www.dfstudios.co.uk/articles/programming/image-programming-algorithms/image-processing-algorithms-part-6-gamma-correction/
 
         int it = 0;
-        for (int pixel : EditorArea.getSelf().rOut.pix) {
-            Color c = colorConvert(pixel, EditorArea.getSelf().rOut.mode);
+        for (int pixel : PixelStorage.getSelf().getCurrentPixelMap().pix) {
+            Color c = colorConvert(pixel, PixelStorage.getSelf().getCurrentPixelMap().mode);
 
             int gammaCorrection = (int) (1 / (float)val);
 
@@ -46,12 +47,75 @@ public class FeatureImageAdjust {
                 255 * (c.getBlue()  / 255)  ^ gammaCorrection
             );
 
-            EditorArea.getSelf().rOut.pix[it] = colorConvert(c2);
+            PixelStorage.getSelf().getCurrentPixelMap().pix[it] = colorConvert(c2);
 
             it++;
         }
 
-        EditorArea.getSelf().update();
+        PixelStorage.getSelf().updateCurrent();
+
+    }
+
+    public static void colorReplace(Color what, Color to, int tolerance, boolean smart) {
+
+        int it = 0;
+        for (int pixel : PixelStorage.getSelf().getCurrentPixelMap().pix) {
+            Color c = colorConvert(pixel, PixelStorage.getSelf().getCurrentPixelMap().mode);
+
+            Color diff = ColorHelper.sub(c, what);
+
+            if (Math.abs(ColorHelper.sum(diff)) < tolerance) {
+                if(smart) {
+                    PixelStorage.getSelf().getCurrentPixelMap().pix[it] = colorConvert( ColorHelper.add(to, diff) );
+                }
+                else {
+                    PixelStorage.getSelf().getCurrentPixelMap().pix[it] = colorConvert(to);
+                }
+            }
+            it++;
+        }
+
+        PixelStorage.getSelf().updateCurrent();
+
+    }
+
+    public static void colorInvert() {
+
+        int it = 0;
+        for (int pixel : PixelStorage.getSelf().getCurrentPixelMap().pix) {
+            Color c = colorConvert(pixel, PixelStorage.getSelf().getCurrentPixelMap().mode);
+
+            PixelStorage.getSelf().getCurrentPixelMap().pix[it] = colorConvert(new Color(
+                    255 - c.getRed(),
+                    255 - c.getGreen(),
+                    255 - c.getBlue()
+            ));
+
+            it++;
+        }
+
+        PixelStorage.getSelf().updateCurrent();
+
+    }
+
+    public static void colorBrightness(double m) {
+
+        int it = 0;
+        for (int pixel : PixelStorage.getSelf().getCurrentPixelMap().pix) {
+            Color c = colorConvert(pixel, PixelStorage.getSelf().getCurrentPixelMap().mode);
+
+            Color cn = new Color(
+                    Math.min((int) (c.getRed() * m),255),
+                    Math.min((int) (c.getGreen() * m),255),
+                    Math.min((int) (c.getBlue() * m),255)
+            );
+
+            PixelStorage.getSelf().getCurrentPixelMap().pix[it] = colorConvert(cn);
+
+            it++;
+        }
+
+        PixelStorage.getSelf().updateCurrent();
 
     }
 

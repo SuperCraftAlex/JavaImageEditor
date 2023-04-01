@@ -1,7 +1,6 @@
 package at.alex_s168.imageeditor.ui.image.adjust;
 
 import at.alex_s168.imageeditor.features.image.FeatureImageAdjust;
-import at.alex_s168.imageeditor.features.image.FeatureImageColor;
 import at.alex_s168.imageeditor.ui.UIBottomButtons;
 import at.alex_s168.imageeditor.util.Translator;
 import org.eclipse.swt.SWT;
@@ -30,7 +29,7 @@ public class UIAdjustBrightnessAndContrast {
                 UIBottomButtons.generateBottomButtons(w, new SelectionListener() {
                     @Override
                     public void widgetSelected(SelectionEvent e) {
-                        FeatureImageColor.colorBrightness((double) b[0] / 100);
+                        FeatureImageAdjust.colorBrightness((double) b[0] / 100);
                         System.out.println((double) c[0] - 150);
                         FeatureImageAdjust.changeContrast((double) c[0] - 150);
                     }

@@ -1,6 +1,6 @@
 package at.alex_s168.imageeditor.features.image;
 
-import at.alex_s168.imageeditor.ui.EditorArea;
+import at.alex_s168.imageeditor.PixelStorage;
 import static at.alex_s168.imageeditor.util.ColorHelper.*;
 import org.eclipse.swt.graphics.Color;
 import at.alex_s168.imageeditor.features.image.ImageMode;
@@ -11,12 +11,11 @@ public class FeatureImageMode {
      * Changes the Image mode to RGB
      */
     public static void changeModeToRGB() {
-        switch(EditorArea.getSelf().rOut.mode) {
+        switch(PixelStorage.getSelf().getCurrentPixelMap().mode) {
             case GRAYSCALE:
-                EditorArea.getSelf().rOut.mode = ImageMode.RGB;
+                PixelStorage.getSelf().getCurrentPixelMap().mode = ImageMode.RGB;
 
             default:
-                return;
         }
     }
 
@@ -29,10 +28,10 @@ public class FeatureImageMode {
 
         changeModeToRGB();
 
-        if(EditorArea.getSelf().rOut.mode == ImageMode.RGB) {
+        if(PixelStorage.getSelf().getCurrentPixelMap().mode == ImageMode.RGB) {
 
             int it = 0;
-            for (int pixel : EditorArea.getSelf().rOut.pix) {
+            for (int pixel : PixelStorage.getSelf().getCurrentPixelMap().pix) {
                 Color c = colorConvert(pixel, ImageMode.RGB);
 
                 int intensity;
@@ -49,16 +48,16 @@ public class FeatureImageMode {
                         intensity
                 );
 
-                EditorArea.getSelf().rOut.pix[it] = colorConvert(c2);
+                PixelStorage.getSelf().getCurrentPixelMap().pix[it] = colorConvert(c2);
 
                 it++;
             }
 
         }
 
-        EditorArea.getSelf().rOut.mode = ImageMode.GRAYSCALE;
+        PixelStorage.getSelf().getCurrentPixelMap().mode = ImageMode.GRAYSCALE;
 
-        EditorArea.getSelf().update();
+        PixelStorage.getSelf().updateCurrent();
 
     }
 

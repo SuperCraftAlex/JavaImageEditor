@@ -14,6 +14,7 @@ public class ImageEditor {
     protected Display display;
     protected Editor editor;
     protected PixelStorage pixelStorage;
+    protected ToolStorage toolStorage;
 
     public static void main(String... args) {
 
@@ -21,7 +22,7 @@ public class ImageEditor {
 
         CommandLineParser parser = new CommandLineParser();
         parser.parseInput(args);
-        // logicSim.subCircuitFolder = new File(parser.getOption("sub-circuit-folder"));
+        // parser.getOption("test-option");
 
         editor.start();
 
@@ -45,6 +46,9 @@ public class ImageEditor {
     public PixelStorage getPixelStorage() {
         return this.pixelStorage;
     }
+    public ToolStorage getToolStorage() {
+        return this.toolStorage;
+    }
     public boolean shouldTerminate() {
         return shouldTerminate;
     }
@@ -57,6 +61,8 @@ public class ImageEditor {
 
         Translator.setLangFolder("/lang");
         Translator.changeLanguage("lang_en");
+
+        toolStorage = new ToolStorage();
 
         this.display = new Display();
 

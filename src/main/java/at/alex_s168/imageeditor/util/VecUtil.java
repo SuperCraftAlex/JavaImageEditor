@@ -18,4 +18,16 @@ public class VecUtil {
         );
     }
 
+    public static Vec2i div(Vec2i a, double b) {
+        a.x /= b;
+        a.y /= b;
+        return a;
+    }
+
+    public static Vec2i mul(Vec2i a, double b) {
+        a.x *= b;
+        a.y *= b;
+        return a;
+    }
+
 }

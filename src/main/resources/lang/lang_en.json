@@ -30,20 +30,10 @@
   "editor.menu.image.adjust": "Adjust",
   "editor.menu.image.adjust.brightness": "Brightness / Contrast",
   "editor.menu.image.adjust.invert": "Invert",
-
   "editor.menu.image.adjust.color_replace": "Replace Color",
-  "editor.menu.image.color": "Color",
-  "editor.menu.image.color.channel": "Channel",
-  "editor.menu.image.color.channel.remove": "Remove Channel",
-  "editor.menu.image.color.channel.remove.R": "Red",
-  "editor.menu.image.color.channel.remove.G": "Green",
-  "editor.menu.image.color.channel.remove.B": "Blue",
-
-  "editor.menu.image.color.channel.rotate": "Rotate Channel",
-  "editor.menu.image.color.channel.rotate.CW": "Clockwise",
-  "editor.menu.image.color.channel.rotate.CCW": "Counterclockwise",
 
   "editor.window.image.adjust.brightness": "Change Brightness / Contast",
   "editor.window.image.color.replace": "Replace Color",
   "editor.window.image.adjust.color_replace.smartreplace": "Smart replace"
+
 }
