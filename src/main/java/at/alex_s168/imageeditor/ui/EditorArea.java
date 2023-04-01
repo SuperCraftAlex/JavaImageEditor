@@ -115,6 +115,7 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 	}
 
 	public void render() {
+		long startTime = System.currentTimeMillis();
 
 		if (this.isDisposed() || this.glCanvas == null) return;
 		
@@ -198,6 +199,9 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 		editor.sliderY.setMaximum(Math.max(0, PixelStorage.getSelf().visibleAABB.getHeight() - getSize().y)+1);
 		editor.sliderX.setMaximum(Math.max(0, PixelStorage.getSelf().visibleAABB.getWidth()  - getSize().x)+1);
 
+		long endTime = System.currentTimeMillis();
+		double fps = 1/((endTime - startTime)*0.001) * 0.1;
+		Editor.getSelf().fpsLabel.setText((int)fps*10 + " FPS");
 	}
 
 	public void openFile(File filePath) {

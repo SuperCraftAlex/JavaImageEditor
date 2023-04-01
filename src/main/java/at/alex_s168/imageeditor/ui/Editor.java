@@ -34,6 +34,7 @@ public class Editor {
     public final Slider sliderY;
 
     public final Text zoomPercentageInput;
+    public final Label fpsLabel;
 
     public static Image decodeImage(String imageString) {
         return new Image(ImageEditor.getInstance().getDisplay(), new ImageData(new ByteArrayInputStream(Base64.getDecoder().decode(imageString))));
@@ -145,7 +146,7 @@ public class Editor {
 
         zoomPercentageInput = new Text(groupBottom, SWT.LEFT);
         zoomPercentageInput.setTextLimit(3);
-        zoomPercentageInput.setSize(100,zoomPercentageInput.getSize().y);
+        //zoomPercentageInput.setSize(100,zoomPercentageInput.getSize().y);
         zoomPercentageInput.setText("100");
         zoomPercentageInput.addModifyListener(e -> {
             try {
@@ -153,6 +154,9 @@ public class Editor {
             } catch (Exception ignored) {}
         }
         );
+
+        fpsLabel = new Label(groupBottom, SWT.LEFT);
+        fpsLabel.setText("-1 FPS");
 
         // - sliders
         //todo: sliders weird

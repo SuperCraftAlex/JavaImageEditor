@@ -86,7 +86,7 @@ public class PixelStorage {
                 PixelMap m = l.pixelMap;
                 int w = (int) (m.getWidth() * scale);
                 int h = (int) (m.getHeight() * scale);
-                renderLayer(x+m.pos.x, y+m.pos.y, w, h, l.textureID);
+                renderLayer((int) ((x+m.pos.x)*scale), (int) ((y+m.pos.y)*scale), w, h, l.textureID);
 
                 visibleAABB.maxI(m.getBoundsPositional());
             }
