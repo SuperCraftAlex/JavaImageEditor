@@ -192,7 +192,7 @@ public class Editor {
     }
 
     public void updateTitle() {
-        this.shell.setText("ImageEditor - alpha" + (this.openFile != null ? " - " + this.openFile.toString() : ""));
+        this.shell.setText("ImageWorks - alpha" + (this.openFile != null ? " - " + this.openFile.toString() : ""));
     }
 
     public Shell getShell() {
