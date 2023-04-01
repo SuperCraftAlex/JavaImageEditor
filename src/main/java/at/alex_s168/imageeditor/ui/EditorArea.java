@@ -106,6 +106,8 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 		GL33.glDisable(GL33.GL_DEPTH_TEST);
 		GL33.glDisable(GL33.GL_CULL_FACE);
 
+		PixelStorage.getSelf().initGL();
+
 		GL33.glEnable(GL33.GL_BLEND);
 		GL33.glBlendFunc(GL33.GL_SRC_ALPHA, GL33.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -213,7 +215,7 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 
 		PixelStorage.getSelf().addLayer(m);
 
-		PixelStorage.getSelf().updateCurrent();
+		PixelStorage.getSelf().update();
 	}
 
 	public void saveFile(File filePath) {
@@ -247,7 +249,7 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 
 		PixelStorage.getSelf().reset(new PixelMap(sizeX, sizeY, pix));
 
-		PixelStorage.getSelf().updateCurrent();
+		PixelStorage.getSelf().update();
 	}
 
 	public void copyToClipboard(AABB aabb) {

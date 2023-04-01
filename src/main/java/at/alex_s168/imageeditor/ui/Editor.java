@@ -146,7 +146,6 @@ public class Editor {
 
         zoomPercentageInput = new Text(groupBottom, SWT.LEFT);
         zoomPercentageInput.setTextLimit(3);
-        //zoomPercentageInput.setSize(100,zoomPercentageInput.getSize().y);
         zoomPercentageInput.setText("100");
         zoomPercentageInput.addModifyListener(e -> {
             try {

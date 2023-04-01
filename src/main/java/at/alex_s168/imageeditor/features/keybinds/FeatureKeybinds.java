@@ -12,14 +12,14 @@ public class FeatureKeybinds {
     public static void keyReleased(KeyEvent e) {
         String key = Character.toString(e.character);
         if(key.equals("+")) {
-            EditorArea.getSelf().scale = Math.min(9, 1.1 * EditorArea.getSelf().scale);
+            EditorArea.getSelf().scale = Math.min(9.99, 1.1 * EditorArea.getSelf().scale);
             Editor.getSelf().zoomPercentageInput.setText("" + (int) (EditorArea.getSelf().scale * 100));
-            PixelStorage.getSelf().updateCurrent();
+            PixelStorage.getSelf().update();
         }
         if(key.equals("-")) {
             EditorArea.getSelf().scale = Math.max(0.1, 0.9 * EditorArea.getSelf().scale);
             Editor.getSelf().zoomPercentageInput.setText("" + (int) (EditorArea.getSelf().scale * 100));
-            PixelStorage.getSelf().updateCurrent();
+            PixelStorage.getSelf().update();
         }
         if(e.keyCode == SWT.ESC) {
             EditorArea.getSelf().selection.clear();

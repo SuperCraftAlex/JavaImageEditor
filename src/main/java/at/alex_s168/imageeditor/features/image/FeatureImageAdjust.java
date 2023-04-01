@@ -28,7 +28,7 @@ public class FeatureImageAdjust {
             it++;
         }
 
-        PixelStorage.getSelf().updateCurrent();
+        PixelStorage.getSelf().update();
 
     }
 
@@ -52,7 +52,7 @@ public class FeatureImageAdjust {
             it++;
         }
 
-        PixelStorage.getSelf().updateCurrent();
+        PixelStorage.getSelf().update();
 
     }
 
@@ -75,7 +75,7 @@ public class FeatureImageAdjust {
             it++;
         }
 
-        PixelStorage.getSelf().updateCurrent();
+        PixelStorage.getSelf().update();
 
     }
 
@@ -94,7 +94,7 @@ public class FeatureImageAdjust {
             it++;
         }
 
-        PixelStorage.getSelf().updateCurrent();
+        PixelStorage.getSelf().update();
 
     }
 
@@ -115,7 +115,7 @@ public class FeatureImageAdjust {
             it++;
         }
 
-        PixelStorage.getSelf().updateCurrent();
+        PixelStorage.getSelf().update();
 
     }
 

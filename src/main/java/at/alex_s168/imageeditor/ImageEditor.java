@@ -63,12 +63,11 @@ public class ImageEditor {
         Translator.changeLanguage("lang_en");
 
         toolStorage = new ToolStorage();
+        pixelStorage = new PixelStorage();
 
         this.display = new Display();
 
         editor = new Editor(display);
-
-        pixelStorage = new PixelStorage();
 
         while (!shouldTerminate()) {
             update();

@@ -57,7 +57,7 @@ public class FeatureImageMode {
 
         PixelStorage.getSelf().getCurrentPixelMap().mode = ImageMode.GRAYSCALE;
 
-        PixelStorage.getSelf().updateCurrent();
+        PixelStorage.getSelf().update();
 
     }
 

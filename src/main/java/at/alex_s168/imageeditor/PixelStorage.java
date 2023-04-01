@@ -8,18 +8,22 @@ import de.m_marvin.univec.impl.Vec2i;
 import org.lwjgl.opengl.GL33;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 public class PixelStorage {
 
     private final List<Layer> layers = new ArrayList<>();
-    private final Queue<Integer> updateQueue = new LinkedList<>();
 
     public final AABB visibleAABB = new AABB(new Vec2i(0,0), new Vec2i(0,0));
 
     private int currentLayer;
+
+    private int textureID;
+
+    private boolean toUpdate = false;
+
+    private PixelMap mOut = new PixelMap();
+
 
     public static PixelStorage getSelf() {
         return ImageEditor.getInstance().getPixelStorage();
@@ -38,11 +42,10 @@ public class PixelStorage {
     }
 
     public void addLayer(PixelMap m) {
-        layers.add( new Layer(m, initGL()) );
-        updateLayerTexture( layers.get(layers.size()-1) );
+        layers.add( new Layer(m) );
     }
 
-    private void renderLayer(int x, int y, int w, int h, int textureID) {
+    private void renderMap(int x, int y, int w, int h) {
         GL33.glBindTexture(GL33.GL_TEXTURE_2D, textureID);
 
         GL33.glColor4f(1, 1, 1, 1f);
@@ -59,52 +62,48 @@ public class PixelStorage {
         GL33.glEnd();
     }
 
-    private void updateTexture(int[] pixels, int width, int height, int txid) {
-        GL33.glBindTexture(GL33.GL_TEXTURE_2D, txid);
+    private void updateTexture(int[] pixels, int width, int height) {
+        GL33.glBindTexture(GL33.GL_TEXTURE_2D, textureID);
         GL33.glTexImage2D(GL33.GL_TEXTURE_2D, 0, GL33.GL_RGBA8, width, height, 0,  GL33.GL_BGRA, GL33.GL_UNSIGNED_INT_8_8_8_8_REV, pixels);
-        GL33.glBindTexture(GL33.GL_TEXTURE_2D, txid);
+        GL33.glBindTexture(GL33.GL_TEXTURE_2D, 0);
     }
 
-    private void updateLayerTexture(Layer l) {
-        PixelMap m = l.pixelMap;
-        updateTexture(m.pix, m.getWidth(), m.getHeight(), l.textureID);
+    private void updateTexture() {
+        mOut = overlayVisible();
+        updateTexture(mOut.pix, mOut.getWidth(), mOut.getHeight());
     }
 
-    public void updateCurrent() {
-        updateQueue.add(currentLayer);
+    public void update() {
+        toUpdate = true;
     }
 
     public void tick(int x, int y, double scale) {
 
-        for(int layer : updateQueue) {
-            updateLayerTexture(layers.get(layer));
+        //todo: smart overlaying
+
+        if(toUpdate) {
+            updateTexture();
+            toUpdate = false;
         }
-        updateQueue.clear();
 
         for(Layer l : layers) {
             if(l.visible) {
-                PixelMap m = l.pixelMap;
-                int w = (int) (m.getWidth() * scale);
-                int h = (int) (m.getHeight() * scale);
-                renderLayer((int) ((x+m.pos.x)*scale), (int) ((y+m.pos.y)*scale), w, h, l.textureID);
-
-                visibleAABB.maxI(m.getBoundsPositional());
+                visibleAABB.maxI(l.pixelMap.getBoundsPositional());
             }
         }
 
+        renderMap((int) ((x+mOut.pos.x)*scale), (int) ((y+mOut.pos.y)*scale), (int) (visibleAABB.getWidth()*scale), (int) (visibleAABB.getHeight()*scale));
+
     }
 
-    private int initGL() {
-        int t = GL33.glGenTextures();
+    public void initGL() {
+        textureID = GL33.glGenTextures();
 
         GL33.glEnable(GL33.GL_TEXTURE_2D);
-        GL33.glBindTexture(GL33.GL_TEXTURE_2D, t);
+        GL33.glBindTexture(GL33.GL_TEXTURE_2D, textureID);
         GL33.glTexParameterf(GL33.GL_TEXTURE_2D, GL33.GL_TEXTURE_MIN_FILTER, GL33.GL_NEAREST);
         GL33.glTexParameterf(GL33.GL_TEXTURE_2D, GL33.GL_TEXTURE_MAG_FILTER, GL33.GL_NEAREST);
-        GL33.glBindTexture(GL33.GL_TEXTURE_2D, t);
-
-        return t;
-
+        GL33.glBindTexture(GL33.GL_TEXTURE_2D, 0);
     }
 
     public PixelMap overlayVisible() {
