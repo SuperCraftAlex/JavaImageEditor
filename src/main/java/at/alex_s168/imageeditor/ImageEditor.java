@@ -13,6 +13,7 @@ public class ImageEditor {
     protected boolean shouldTerminate;
     protected Display display;
     protected Editor editor;
+    protected PixelStorage pixelStorage;
 
     public static void main(String... args) {
 
@@ -41,7 +42,9 @@ public class ImageEditor {
     public Device getDisplay() {
         return this.display;
     }
-
+    public PixelStorage getPixelStorage() {
+        return this.pixelStorage;
+    }
     public boolean shouldTerminate() {
         return shouldTerminate;
     }
@@ -58,6 +61,8 @@ public class ImageEditor {
         this.display = new Display();
 
         editor = new Editor(display);
+
+        pixelStorage = new PixelStorage();
 
         while (!shouldTerminate()) {
             update();

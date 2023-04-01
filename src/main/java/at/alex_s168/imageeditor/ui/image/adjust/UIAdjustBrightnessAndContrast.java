@@ -1,5 +1,6 @@
 package at.alex_s168.imageeditor.ui.image.adjust;
 
+import at.alex_s168.imageeditor.features.image.FeatureImageAdjust;
 import at.alex_s168.imageeditor.features.image.FeatureImageColor;
 import at.alex_s168.imageeditor.ui.UIBottomButtons;
 import at.alex_s168.imageeditor.util.Translator;
@@ -23,14 +24,15 @@ public class UIAdjustBrightnessAndContrast {
                 w.setText(Translator.translate("editor.window.image.adjust.brightness"));
                 w.setLayout(new BorderLayout());
 
-                final int[] b = {1};
-                final int[] c = {1};
+                final int[] b = {100};
+                final int[] c = {150};
 
                 UIBottomButtons.generateBottomButtons(w, new SelectionListener() {
                     @Override
                     public void widgetSelected(SelectionEvent e) {
                         FeatureImageColor.colorBrightness((double) b[0] / 100);
-                        //todo: contast (c)
+                        System.out.println((double) c[0] - 150);
+                        FeatureImageAdjust.changeContrast((double) c[0] - 150);
                     }
 
                     @Override
@@ -67,9 +69,9 @@ public class UIAdjustBrightnessAndContrast {
                 final Slider contrastSlide = new Slider(settings, SWT.HORIZONTAL);
                 contrastSlide.setLayoutData(new BorderData(SWT.BOTTOM, SWT.CENTER, SWT.CENTER));
                 contrastSlide.setMinimum(20);
-                contrastSlide.setMaximum(200);
+                contrastSlide.setMaximum(300);
                 contrastSlide.setIncrement(1);
-                contrastSlide.setSelection(100);
+                contrastSlide.setSelection(150);
 
                 contrastSlide.addSelectionListener(new SelectionAdapter() {
                     public void widgetSelected(SelectionEvent e) {

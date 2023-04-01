@@ -22,7 +22,7 @@ import java.util.Base64;
 public class Editor {
 
 
-    protected File openFile;
+    public File openFile;
     protected Shell shell;
     protected Menu titleBar;
     protected ToolBar toolBar;
@@ -272,6 +272,8 @@ public class Editor {
 
         this.shell.open();
         updateTitle();
+
+        UIWelcome.genWelcomeScreen(shell, display);
     }
 
     public void updateTitle() {
@@ -286,7 +288,11 @@ public class Editor {
         this.editorArea.render();
     }
 
-    public void loadFile() {
+    public static Editor getSelf() {
+        return ImageEditor.getInstance().getEditor();
+    }
+
+    public boolean loadFile() {
         FileDialog fileDialog = new FileDialog(shell, SWT.OPEN);
         // TODO File-type specific dialog
         String path = fileDialog.open();
@@ -295,7 +301,9 @@ public class Editor {
             editorArea.openFile(filePath);
             this.openFile = filePath;
             updateTitle();
+            return true;
         }
+        return false;
     }
 
     public void saveFile(boolean saveAs) {

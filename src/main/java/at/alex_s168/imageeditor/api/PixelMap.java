@@ -17,9 +17,12 @@ public class PixelMap {
     protected int width;
     protected int height;
 
+    public Vec2i pos = new Vec2i(0,0);
+
     public ImageMode mode;
 
     public int[] pix;
+    public int[] alpha;
 
     public PixelMap(int widthIn, int heightIn) {
         this.width = widthIn;
@@ -31,15 +34,30 @@ public class PixelMap {
     public PixelMap(int widthIn, int heightIn, int[] pixIn) {
         this.width = widthIn;
         this.height = heightIn;
+
         this.pix = pixIn;
+        this.alpha = new int[pixIn.length];
 
         this.mode  = ImageMode.RGB;
+    }
+
+    public PixelMap(int widthIn, int heightIn, int[] pixIn, Vec2i posIn) {
+        this.width = widthIn;
+        this.height = heightIn;
+
+        this.pix = pixIn;
+        this.alpha = new int[pixIn.length];
+
+        this.mode  = ImageMode.RGB;
+        this.pos = posIn;
     }
 
     public PixelMap() {
         this.width = 0;
         this.height = 0;
+
         this.pix = new int[]{0};
+        this.alpha = new int[]{0};
 
         this.mode  = ImageMode.RGB;
     }

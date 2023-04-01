@@ -1,7 +1,10 @@
 {
 
+  "editor.window.welcome": "Startup Menu",
+
   "editor.menu.file": "File",
   "editor.menu.file.new": "New...",
+  "editor.window.file.new": "Create new file",
   "editor.menu.file.save": "Save",
   "editor.menu.file.save_as": "Save as...",
   "editor.menu.file.load": "Open...",
@@ -21,6 +24,7 @@
   "contrast": "Contrast",
   "tolerance": "Tolerance",
   "change_color": "Change Color",
+  "color_change": "Change Color",
 
   "editor.menu.image": "Image",
   "editor.menu.image.adjust": "Adjust",

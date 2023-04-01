@@ -1,6 +1,7 @@
 package at.alex_s168.imageeditor.api;
 
 import de.m_marvin.univec.impl.Vec2d;
+import de.m_marvin.univec.impl.Vec2i;
 
 public class AABB {
 
@@ -42,6 +43,13 @@ public class AABB {
         return (
                 vec.x >= A.x && vec.x <= B.x && vec.y >= A.y && vec.y <= B.y
         );
+    }
+
+    /**
+     * Only works if A = (0|0);
+     */
+    public Vec2i addM(Vec2i v) {
+       return new Vec2i(B.add(v));
     }
 
 }

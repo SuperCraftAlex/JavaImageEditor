@@ -1,29 +1,25 @@
 package at.alex_s168.imageeditor.features.image;
 
-import at.alex_s168.imageeditor.ImageEditor;
 import at.alex_s168.imageeditor.ui.EditorArea;
-import static at.alex_s168.imageeditor.util.ColorHelper.*;
 import org.eclipse.swt.graphics.Color;
+
+import static at.alex_s168.imageeditor.util.ColorHelper.colorConvert;
+import static at.alex_s168.imageeditor.util.ColorHelper.truncate;
 
 public class FeatureImageAdjust {
 
-    /**
-     * Changes the Contrast of the image
-     * @param val The contrast value. Range: -128 to 128
-     */
-    public static void changeContrast(int val) {
-        // if bugs check: https://www.dfstudios.co.uk/articles/programming/image-programming-algorithms/image-processing-algorithms-part-5-contrast-adjustment/
-
+    public static void changeContrast(double val) {
         int it = 0;
         for (int pixel : EditorArea.getSelf().rOut.pix) {
             Color c = colorConvert(pixel, EditorArea.getSelf().rOut.mode);
 
-            float factor = (259 * (val + 255)) / (255 * (259 - val));
+            float factor = (float) (259 * (val + 255)) / (float) (255 * (259 - val));
 
             Color c2 = new Color(
-                truncate(factor * (c.getRed() - 128) + 128),
-                truncate(factor * (c.getGreen() - 128) + 128),
-                truncate(factor * (c.getBlue() - 128) + 128)
+                    truncate(factor * (c.getRed() - 128) + 128),
+                    truncate(factor * (c.getGreen() - 128) + 128),
+                    truncate(factor * (c.getBlue() - 128) + 128)
+
             );
 
             EditorArea.getSelf().rOut.pix[it] = colorConvert(c2);
@@ -35,10 +31,6 @@ public class FeatureImageAdjust {
 
     }
 
-    /**
-     * Changes the Gamma of the image
-     * @param val The gamma value. Range: 0.01 to 7.99
-     */
     public static void changeGamma(int val) {
         // if bugs check: https://www.dfstudios.co.uk/articles/programming/image-programming-algorithms/image-processing-algorithms-part-6-gamma-correction/
 

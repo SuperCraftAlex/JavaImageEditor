@@ -1,8 +1,10 @@
 package at.alex_s168.imageeditor.ui;
 
 import at.alex_s168.imageeditor.ImageEditor;
+import at.alex_s168.imageeditor.PixelStorage;
 import at.alex_s168.imageeditor.api.AABB;
 import at.alex_s168.imageeditor.api.PixelMap;
+import at.alex_s168.imageeditor.features.keybinds.FeatureKeybinds;
 import at.alex_s168.imageeditor.util.ClipboardUtil;
 import at.alex_s168.imageeditor.util.ColorHelper;
 import at.alex_s168.imageeditor.util.ImagePixelHelper;
@@ -11,6 +13,7 @@ import de.m_marvin.logicsim.ui.TextRenderer;
 import de.m_marvin.univec.impl.Vec2d;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.opengl.GLCanvas;
 import org.eclipse.swt.opengl.GLData;
@@ -47,9 +50,9 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 	protected Vec2d realMousePosition;
 	protected Vec2d prevRealMousePosition;
 
-	protected AABB selection = new AABB();
+	public AABB selection = new AABB();
 
-	protected double scale = 1;
+	public double scale = 1;
 
 	public PixelMap rOut = new PixelMap();
 
@@ -91,29 +94,7 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		String key = Character.toString(e.character);
-		if(key.equals("+")) {
-			scale += 0.1;
-			update();
-		}
-		if(key.equals("-")) {
-			scale -= 0.1;
-			update();
-		}
-		if(e.keyCode == SWT.ESC) {
-			selection.clear();
-		}
-
-		if(((e.stateMask & SWT.CTRL) == SWT.CTRL) && (e.keyCode == 's')) {
-			saveFile(ImageEditor.getInstance().getEditor().openFile);
-		}
-
-		if(((e.stateMask & SWT.CTRL) == SWT.CTRL) && (e.keyCode == 'c')) {
-			if(selection.sqArea()>0) {
-				copyToClipboard(selection);
-			}
-		}
-
+		FeatureKeybinds.keyReleased(e);
 	}
 
 	public void update() {
@@ -133,7 +114,7 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 
 		GL33.glMatrixMode(GL33.GL_PROJECTION);
 		GL33.glLoadIdentity();
-		GL33.glOrtho(0,1000,1000,0, 0, 1);
+		GL33.glOrtho(0,10_000,10_000,0, 0, 1);
 		GL33.glEnable(GL33.GL_BLEND);
 		GL33.glBlendFunc(GL33.GL_SRC_ALPHA, GL33.GL_ONE_MINUS_SRC_ALPHA);
 		GL33.glDisable(GL33.GL_DEPTH_TEST);
@@ -151,7 +132,7 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 
 	public void updateImage(int[] pixels, int width, int height) {
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D, textureId);
-		GL33.glTexImage2D(GL33.GL_TEXTURE_2D, 0, GL33.GL_RGBA8, width, height, 0,  GL33.GL_BGRA, GL33.GL_UNSIGNED_INT_8_8_8_8_REV, pixels);
+		GL33.glTexImage2D(GL33.GL_TEXTURE_2D, 0, GL33.GL_RGBA8, width, height, 0,  GL33.GL_RGBA, GL33.GL_UNSIGNED_INT_8_8_8_8_REV, pixels);
 		GL33.glBindTexture(GL33.GL_TEXTURE_2D, 0);
 	}
 
@@ -183,8 +164,9 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 		int w = (int) (rOut.getWidth() * scale);
 		int h = (int) (rOut.getHeight() * scale);
 
-		int x = editor.sliderX.getMaximum() - editor.scrollX;
-		int y = editor.sliderY.getMaximum() - editor.scrollY;
+		//todo
+		int x = 1 / (editor.scrollX + 1);
+		int y = 1 / (editor.scrollY + 1);
 
 		if(mousePosition != null) {
 			realMousePosition = mousePosition.sub((double) x, (double) y).div(scale);
@@ -195,7 +177,7 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 		}
 
 		if (toUpdate) {
-			updateNowImage(x,y,w,h);
+			updateNowImage();
 
 			toUpdate = false;
 		}
@@ -252,7 +234,7 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 
 	}
 
-	private void updateNowImage(int x, int y, int w, int h) {
+	private void updateNowImage() {
 		updateImage(rOut);
 	}
 
@@ -274,7 +256,7 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 	}
 
 	public void openFile(File filePath) {
-		this.rOut = ImagePixelHelper.getPixFromImage(filePath);
+		PixelStorage.getSelf().reset(ImagePixelHelper.getPixFromImage(filePath));
 
 		update();
 	}
@@ -300,9 +282,9 @@ public class EditorArea extends Canvas implements MouseListener, MouseMoveListen
 	public void newFile(int sizeX, int sizeY) {
 		int[] pix = new int[sizeX * sizeY];
 
-		Arrays.fill(pix, ColorHelper.colorConvert(255, 0, 0));
+		Arrays.fill(pix, ColorHelper.colorConvert(255, 255, 255, 255));
 
-		this.rOut = new PixelMap(sizeX, sizeY, pix);
+		PixelStorage.getSelf().reset(new PixelMap(sizeX, sizeY, pix));
 
 		update();
 	}

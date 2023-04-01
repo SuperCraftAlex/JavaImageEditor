@@ -20,33 +20,41 @@ public class ColorHelper {
         return 0xFF000000 | R | G | B;
     }
 
+    public static int colorConvert(int R, int G, int B, int A){
+        A = (A << 24) & 0xFF000000;
+        R = (R << 16) & 0x00FF0000;
+        G = (G << 8)  & 0x0000FF00;
+        B =  B        & 0x000000FF;
+
+        return R | G | B | A;
+    }
+
     public static int colorConvert(Color c){
         return colorConvert( 
             c.getRed(),
             c.getGreen(),
-            c.getBlue()
+            c.getBlue(),
+            c.getAlpha()
         );
     }
 
     public static Color colorConvert(int val, ImageMode mode) {
-        switch(mode) {
-            case RGB, GRAYSCALE:
-                return new Color(
-                    (val>>16)&0xFF,
-                    (val>>8)&0xFF,
-                    (val)&0xFF
-                );
-                
-            default:
-                return null;
-        }
+        return switch (mode) {
+            case RGB, GRAYSCALE -> new Color(
+                      (val >> 16) & 0xFF,
+                    (val >> 8) & 0xFF,
+                     (val) & 0xFF,
+                    (val >> 24) & 0xFF
+            );
+        };
     }
 
     public static Color sub(Color c1, Color c2) {
         return new Color(
                 Math.min(Math.abs(c1.getRed() - c2.getRed()),255),
                 Math.min(Math.abs(c1.getGreen() - c2.getGreen()),255),
-                Math.min(Math.abs(c1.getBlue() - c2.getBlue()),255)
+                Math.min(Math.abs(c1.getBlue() - c2.getBlue()),255),
+                Math.min(Math.abs(c1.getAlpha() - c2.getAlpha()),255)
         );
     }
 
@@ -54,15 +62,8 @@ public class ColorHelper {
         return new Color(
                 Math.min(c1.getRed() + c2.getRed(),255),
                 Math.min(c1.getGreen() + c2.getGreen(),255),
-                Math.min(c1.getBlue() + c2.getBlue(),255)
-        );
-    }
-
-    public static Color div(Color c1, double v) {
-        return new Color(
-                (int) (c1.getRed() / v),
-                (int) (c1.getGreen() / v),
-                (int) (c1.getBlue() / v)
+                Math.min(c1.getBlue() + c2.getBlue(),255),
+                Math.min(c1.getAlpha() + c2.getAlpha(), 255)
         );
     }
 
@@ -86,15 +87,12 @@ public class ColorHelper {
         return Math.min(Math.min((double) c.getRed()/255, (double) c.getBlue()/255), (double) c.getGreen()/255);
     }
 
-    public static double luminosity(Color c) {
-        return 0.5 * (max1(c) + min1(c));
-    }
-
     public static Color truncate(Color c) {
         return new Color(
             range(c.getRed(), 0, 255),
             range(c.getGreen(), 0, 255),
-            range(c.getBlue(), 0, 255)
+            range(c.getBlue(), 0, 255),
+            range(c.getAlpha(), 0, 255)
         );
     }
 
@@ -110,6 +108,10 @@ public class ColorHelper {
 
     public static int truncate(int i) {
         return range(i, 0, 255);
+    }
+
+    public static int truncate(double i) {
+        return range((int) i, 0, 255);
     }
 
     public static int truncate(float i) {
