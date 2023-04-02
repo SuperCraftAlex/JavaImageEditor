@@ -1,4 +1,4 @@
-package at.alex_s168.imageeditor.ui.File;
+package at.alex_s168.imageeditor.ui.file;
 
 import at.alex_s168.imageeditor.ImageEditor;
 import at.alex_s168.imageeditor.util.Translator;

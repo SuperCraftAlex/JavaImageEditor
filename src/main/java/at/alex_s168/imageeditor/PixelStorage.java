@@ -4,6 +4,7 @@ import at.alex_s168.imageeditor.api.AABB;
 import at.alex_s168.imageeditor.api.Layer;
 import at.alex_s168.imageeditor.api.PixelMap;
 import at.alex_s168.imageeditor.util.BlendingUtil;
+import at.alex_s168.imageeditor.util.GLHelper;
 import de.m_marvin.univec.impl.Vec2i;
 import org.lwjgl.opengl.GL33;
 
@@ -46,30 +47,12 @@ public class PixelStorage {
     }
 
     private void renderMap(int x, int y, int w, int h) {
-        GL33.glBindTexture(GL33.GL_TEXTURE_2D, textureID);
-
-        GL33.glColor4f(1, 1, 1, 1f);
-
-        GL33.glBegin(GL33.GL_QUADS);
-        GL33.glTexCoord2f(0, 0);
-        GL33.glVertex2f(x, y);
-        GL33.glTexCoord2f(1, 0);
-        GL33.glVertex2f(x + w, y);
-        GL33.glTexCoord2f(1, 1);
-        GL33.glVertex2f(x + w, y + h);
-        GL33.glTexCoord2f(0, 1);
-        GL33.glVertex2f(x, y + h);
-        GL33.glEnd();
-    }
-
-    private void updateTexture(int[] pixels, int width, int height) {
-        GL33.glBindTexture(GL33.GL_TEXTURE_2D, textureID);
-        GL33.glTexImage2D(GL33.GL_TEXTURE_2D, 0, GL33.GL_RGBA8, width, height, 0,  GL33.GL_BGRA, GL33.GL_UNSIGNED_INT_8_8_8_8_REV, pixels);
+        GLHelper.renderMap(x,y,w,h,textureID);
     }
 
     private void updateTexture() {
         mOut = overlayVisible();
-        updateTexture(mOut.pix, mOut.getWidth(), mOut.getHeight());
+        GLHelper.updateTexture(mOut.pix, mOut.getWidth(), mOut.getHeight(), textureID);
     }
 
     public void update() {

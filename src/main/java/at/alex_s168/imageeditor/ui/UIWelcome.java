@@ -1,12 +1,10 @@
 package at.alex_s168.imageeditor.ui;
 
-import at.alex_s168.imageeditor.ImageEditor;
-import at.alex_s168.imageeditor.ui.File.UIFileNew;
+import at.alex_s168.imageeditor.ui.file.UIFileNew;
 import at.alex_s168.imageeditor.util.Translator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;

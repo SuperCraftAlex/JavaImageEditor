@@ -1,4 +1,4 @@
-package at.alex_s168.imageeditor.ui;
+package at.alex_s168.imageeditor.ui.left;
 
 import at.alex_s168.imageeditor.ToolStorage;
 import at.alex_s168.imageeditor.util.Translator;
@@ -11,7 +11,7 @@ import org.eclipse.swt.layout.BorderData;
 import org.eclipse.swt.layout.BorderLayout;
 import org.eclipse.swt.widgets.*;
 
-public class UIMainColor {
+public class UILeftColor {
 
     public static void genColorSidebar(Shell shell, Composite groupLeft) {
         //todo: custom color selection menu

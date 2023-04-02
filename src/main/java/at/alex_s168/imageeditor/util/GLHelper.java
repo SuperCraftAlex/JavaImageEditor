@@ -8,6 +8,28 @@ import org.lwjgl.opengl.GL33;
 
 public class GLHelper {
 
+    public static void updateTexture(int[] pixels, int width, int height, int textureID) {
+        GL33.glBindTexture(GL33.GL_TEXTURE_2D, textureID);
+        GL33.glTexImage2D(GL33.GL_TEXTURE_2D, 0, GL33.GL_RGBA8, width, height, 0,  GL33.GL_BGRA, GL33.GL_UNSIGNED_INT_8_8_8_8_REV, pixels);
+    }
+
+    public static void renderMap(int x, int y, int w, int h, int textureID) {
+        GL33.glBindTexture(GL33.GL_TEXTURE_2D, textureID);
+
+        GL33.glColor4f(1, 1, 1, 1f);
+
+        GL33.glBegin(GL33.GL_QUADS);
+        GL33.glTexCoord2f(0, 0);
+        GL33.glVertex2f(x, y);
+        GL33.glTexCoord2f(1, 0);
+        GL33.glVertex2f(x + w, y);
+        GL33.glTexCoord2f(1, 1);
+        GL33.glVertex2f(x + w, y + h);
+        GL33.glTexCoord2f(0, 1);
+        GL33.glVertex2f(x, y + h);
+        GL33.glEnd();
+    }
+
     public static void drawRectangle(float width, float x, float y, float w, float h) {
         GL11.glLineWidth(width);
         GL11.glBegin(GL11.GL_LINE_STRIP);

@@ -2,9 +2,11 @@ package at.alex_s168.imageeditor.ui;
 
 import at.alex_s168.imageeditor.ImageEditor;
 import at.alex_s168.imageeditor.features.image.FeatureImageAdjust;
-import at.alex_s168.imageeditor.ui.File.UIFileNew;
+import at.alex_s168.imageeditor.ui.file.UIFileNew;
 import at.alex_s168.imageeditor.ui.image.adjust.UIAdjustBrightnessAndContrast;
 import at.alex_s168.imageeditor.ui.image.adjust.UIAdjustColorReplace;
+import at.alex_s168.imageeditor.ui.left.UILeftColor;
+import at.alex_s168.imageeditor.ui.right.UIRight;
 import at.alex_s168.imageeditor.util.Translator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -122,7 +124,7 @@ public class Editor {
         groupLeft.setLayoutData(new BorderData(SWT.LEFT, SWT.DEFAULT, SWT.DEFAULT));
         groupLeft.setLayout(new BorderLayout());
 
-        UIMainColor.genColorSidebar(shell, groupLeft);
+        UILeftColor.genColorSidebar(shell, groupLeft);
 
         final Composite editor = new Composite(shell, SWT.NONE);
         editor.setLayoutData(new BorderData(SWT.CENTER, SWT.DEFAULT, SWT.DEFAULT));
@@ -136,13 +138,15 @@ public class Editor {
 
         final Composite groupBottom = new Composite(editor, SWT.NONE);
         groupBottom.setLayoutData(new BorderData(SWT.BOTTOM, SWT.DEFAULT, SWT.DEFAULT));
-        GridLayout l = new GridLayout();
-        l.numColumns = 3;
-        groupBottom.setLayout(l);
+        GridLayout groupBottomLayout = new GridLayout();
+        groupBottomLayout.numColumns = 3;
+        groupBottom.setLayout(groupBottomLayout);
 
         final Composite groupRight = new Composite(editor, SWT.NONE);
         groupRight.setLayoutData(new BorderData(SWT.RIGHT, SWT.DEFAULT, SWT.DEFAULT));
         groupRight.setLayout(new BorderLayout());
+
+        UIRight.genUIRightRight(shell, display, groupRight);
 
         zoomPercentageInput = new Text(groupBottom, SWT.LEFT);
         zoomPercentageInput.setTextLimit(3);
@@ -160,10 +164,10 @@ public class Editor {
         // - sliders
         //todo: sliders weird
         sliderX = new Slider(groupBottom, SWT.NONE);
-        GridData gridData = new GridData();
-        gridData.horizontalAlignment = GridData.FILL;
-        gridData.grabExcessHorizontalSpace = true;
-        sliderX.setLayoutData(gridData);
+        GridData sliderXgridData = new GridData();
+        sliderXgridData.horizontalAlignment = GridData.FILL;
+        sliderXgridData.grabExcessHorizontalSpace = true;
+        sliderX.setLayoutData(sliderXgridData);
         sliderX.setMinimum(0);
         sliderX.setMaximum(0);
         sliderX.setIncrement(1);
@@ -175,6 +179,7 @@ public class Editor {
         });
 
         sliderY = new Slider(groupRight, SWT.VERTICAL);
+        sliderY.setLayoutData(new BorderData(SWT.LEFT, SWT.DEFAULT, SWT.DEFAULT));
         sliderY.setMinimum(0);
         sliderY.setMaximum(0);
         sliderY.setIncrement(1);
@@ -192,7 +197,7 @@ public class Editor {
     }
 
     public void updateTitle() {
-        this.shell.setText("ImageWorks - alpha" + (this.openFile != null ? " - " + this.openFile.toString() : ""));
+        this.shell.setText("ImageWorks - alpha" + (this.openFile != null ? " - " + this.openFile : ""));
     }
 
     public Shell getShell() {
